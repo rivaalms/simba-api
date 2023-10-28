@@ -46,4 +46,11 @@ class User extends Authenticatable
    public function redrafts() {
       return $this->hasMany(Redraft::class);
    }
+
+   public $userableType = [
+      'school' => "App\\Models\\School",
+      'supervisor' => "App\\Models\\Supervisor",
+      'officer' => "App\\Models\\Officer",
+      'admin' => null
+   ];
 }
