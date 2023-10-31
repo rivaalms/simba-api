@@ -11,16 +11,24 @@ class Data extends Model
 
    protected $guarded = ['id'];
 
+   protected $with = [
+      'school:id,supervisor_id',
+      'school.users:id,name,email,userable_type,userable_id',
+      'status:id,name',
+      'type:id,name,data_category_id',
+      'type.category:id,name'
+   ];
+
    public function school() {
       return $this->belongsTo(School::class);
    }
 
    public function type() {
-      return $this->belongsTo(DataType::class);
+      return $this->belongsTo(DataType::class, 'data_type_id', 'id');
    }
 
    public function status() {
-      return $this->belongsTo(DataStatus::class);
+      return $this->belongsTo(DataStatus::class, 'data_status_id', 'id');
    }
 
    public function redrafts() {

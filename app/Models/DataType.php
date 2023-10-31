@@ -16,6 +16,6 @@ class DataType extends Model
    }
 
    public function category() {
-      return $this->belongsTo(DataCategory::class);
+      return $this->belongsTo(DataCategory::class, 'data_category_id', 'id');
    }
 }
