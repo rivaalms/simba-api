@@ -20,7 +20,7 @@ class UserController extends Controller
       if ($validator->fails()) return $this->apiResponse(null, 'Invalid credentials format', 422);
 
       try {
-         $user = User::where('email', $request->email)->first();
+         $user = User::where('email', $request->email)->firstOrFail();
          if (!Hash::check($request->password, $user->password)) throw new Exception();
          if ($request->header('UserableType')) $user->userable;
          $token = $user->createToken('auth_token')->plainTextToken;
