@@ -11,8 +11,8 @@ class School extends Model
 
    protected $guarded = ['id'];
 
-   public function users() {
-      return $this->morphMany(User::class, 'userable');
+   public function user() {
+      return $this->MorphOne(User::class, 'userable');
    }
 
    public function supervisor() {

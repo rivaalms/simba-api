@@ -11,8 +11,8 @@ class Supervisor extends Model
 
    protected $guarded = ['id'];
 
-   public function userable() {
-      return $this->morphMany(User::class, 'userable');
+   public function user() {
+      return $this->morphOne(User::class, 'userable');
    }
 
    public function schools() {
