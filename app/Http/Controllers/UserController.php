@@ -36,4 +36,16 @@ class UserController extends Controller
       Auth::user()->tokens()->delete();
       return $this->apiResponse(null);
    }
+
+   public function getUser(Request $request) {
+      if ($request->paginate) {
+         $users = User::paginate($request->perPage)->withQueryString();
+      } else {
+         $users = User::all();
+      }
+
+      foreach ($users as $u) $u->userable;
+
+      return $this->apiResponse($users);
+   }
 }
