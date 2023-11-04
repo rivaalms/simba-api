@@ -27,9 +27,9 @@ return new class extends Migration
          $table->integer('hindu');
          $table->integer('buddha');
          $table->integer('konghucu');
-         $table->integer('conseling');
+         $table->integer('counseling');
          $table->integer('art');
-         $table->integer('sports');
+         $table->integer('sport');
          $table->integer('entrepreneurship');
          $table->timestamps();
       });
