@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\DataController;
+use App\Http\Controllers\DataStatusController;
+use App\Http\Controllers\DataTypeController;
 use App\Http\Controllers\SchoolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,4 +27,9 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data', [DataController::class, 'getData']);
    Route::get('/schools', [SchoolController::class, 'getSchool']);
    Route::get('/users', [UserController::class, 'getUser']);
+
+   Route::get('/options/schools', [SchoolController::class, 'getSchoolOptions']);
+   Route::get('/options/data-categories', [DataCategoryController::class, 'getDataCategoryOptions']);
+   Route::get('/options/data-types', [DataTypeController::class, 'getDataTypeOptions']);
+   Route::get('/options/data-status', [DataStatusController::class, 'getDataStatusOptions']);
 });
