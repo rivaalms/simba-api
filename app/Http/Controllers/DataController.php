@@ -9,13 +9,8 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 class DataController extends Controller
 {
    public function getData(Request $request) {
-      $data = Data::paginate(10)->withQueryString();
+      $data = Data::filter(request(['school', 'type', 'category', 'status', 'year']))->paginate($request->per_page)->withQueryString();
 
-      foreach ($data->items() as $d) {
-         $d->school->name = $d->school->users[0]->name;
-         $d->school->email = $d->school->users[0]->email;
-         unset($d->school->users);
-      }
       return $this->apiResponse($data);
    }
 }
