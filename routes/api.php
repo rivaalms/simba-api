@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::get('/data', [DataController::class, 'getData']);
    Route::post('/data', [DataController::class, 'createData']);
+   Route::post('data/download', [DataController::class, 'downloadData']);
 
    Route::get('/schools', [SchoolController::class, 'getSchool']);
    Route::get('/users', [UserController::class, 'getUser']);

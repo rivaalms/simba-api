@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Data;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class DataController extends Controller
 {
@@ -31,5 +34,15 @@ class DataController extends Controller
 
       $data = Data::create($validator);
       return $this->apiResponse($data, 'New data created successfully');
+   }
+
+   public function downloadData(Request $request) {
+      $data = Data::find($request->id);
+      if (!$data) return $this->apiResponse(null, 'Data not found', 422);
+
+      $path = Crypt::decryptString($data->path);
+      if (!Storage::exists($path)) return $this->apiResponse(null, 'File not found', 422);
+
+      return Storage::download($path);
    }
 }
