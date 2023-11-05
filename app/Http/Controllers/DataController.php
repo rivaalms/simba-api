@@ -23,7 +23,6 @@ class DataController extends Controller
          'year' => 'required',
          'data_type_id' => 'required',
          'data_status_id' => 'required',
-         'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet'
       ]);
 
       $extension = $request->file('file')->getClientOriginalExtension();
@@ -33,7 +32,21 @@ class DataController extends Controller
       $validator['path'] = Crypt::encryptString($path);
 
       $data = Data::create($validator);
-      return $this->apiResponse($data, 'New data created successfully');
+      return $this->apiResponse($data, 'New data created successfully', 201);
+   }
+
+   public function updateData(Request $request, int $id) {
+      $validator = $request->validate([
+         'school_id' => 'required',
+         'year' => 'required',
+         'data_type_id' => 'required',
+         'data_status_id' => 'required',
+      ]);
+
+      $validator = array_diff_key($validator, array('file' => ''));
+
+      $data = Data::find($id)->update($validator);
+      return $this->apiResponse($data, 'Data updated successfully', 204);
    }
 
    public function downloadData(Request $request) {
