@@ -46,7 +46,25 @@ class DataController extends Controller
       $validator = array_diff_key($validator, array('file' => ''));
 
       $data = Data::find($id)->update($validator);
-      return $this->apiResponse($data, 'Data updated successfully', 204);
+      return $this->apiResponse($data, 'Data updated successfully');
+   }
+
+   public function updateDataFile(Request $request, int $id) {
+      $validator = $request->validate([
+         'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet'
+      ]);
+
+      $data = Data::find($id);
+      $oldPath = Crypt::decryptString($data->path);
+      if (Storage::exists($oldPath)) Storage::delete($oldPath);
+
+      $extension = $request->file('file')->getClientOriginalExtension();
+      $path = $validator['file']->storeAs('files', time()."$extension");
+
+      $data->update([
+         'path' => Crypt::encryptString($path)
+      ]);
+      return $this->apiResponse(true, 'File updated successfully');
    }
 
    public function downloadData(Request $request) {
