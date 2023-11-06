@@ -14,4 +14,8 @@ class SchoolStudent extends Model
    public function school() {
       return $this->belongsTo(School::class);
    }
+
+   public function religion() {
+      return $this->belongsTo(Religion::class);
+   }
 }
