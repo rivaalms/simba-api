@@ -76,4 +76,19 @@ class DataController extends Controller
 
       return Storage::download($path);
    }
+
+   public function deleteData(Request $request) {
+      $request->validate([
+         'id' => 'required'
+      ]);
+
+      $data = Data::find($request->id);
+      if (!$data) return $this->apiResponse(null, 'Data not found', 422);
+
+      $path = Crypt::decryptString($data->path);
+      if (Storage::exists($path)) Storage::delete($path);
+
+      $data->delete();
+      return $this->apiResponse(true, 'Data has been deleted');
+   }
 }
