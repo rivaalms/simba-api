@@ -35,6 +35,10 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::delete('/data', [DataController::class, 'deleteData']);
 
    Route::get('/schools', [SchoolController::class, 'getSchool']);
+   Route::post('/school', [SchoolController::class, 'createSchool']);
+   Route::put('/school/{id}', [SchoolController::class, 'updateSchool']);
+   Route::delete('/school', [SchoolController::class, 'deleteSchool']);
+
    Route::get('/users', [UserController::class, 'getUser']);
 
    Route::get('/options/schools', [SchoolController::class, 'getSchoolOptions']);

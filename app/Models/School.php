@@ -18,6 +18,8 @@ class School extends Model
       'supervisor.user:id,name,email,userable_type,userable_id'
    ];
 
+   public const MORPH_ALIAS = 'school';
+
    public function user() {
       return $this->MorphOne(User::class, 'userable');
    }
