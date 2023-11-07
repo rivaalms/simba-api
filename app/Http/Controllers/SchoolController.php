@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\School;
+use Illuminate\Http\Request;
 
 class SchoolController extends Controller
 {
-   public function getSchool() {
-      $schools = User::where('userable_type', 'school')->get();
-      foreach ($schools as $s) $s->userable;
+   public function getSchool(Request $request) {
+      $schools = School::filter(request(['type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
+
       return $this->apiResponse($schools);
    }
 
    public function getSchoolOptions() {
-      $schools = School::select('id')->with('user:id,name,userable_type,userable_id')->get();
+      $schools = School::select('id')->get();
       $data = [];
 
       foreach ($schools as $s) {

@@ -5,6 +5,8 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\DataStatusController;
 use App\Http\Controllers\DataTypeController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SchoolTypeController;
+use App\Http\Controllers\SupervisorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -39,4 +41,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/options/data-categories', [DataCategoryController::class, 'getDataCategoryOptions']);
    Route::get('/options/data-types', [DataTypeController::class, 'getDataTypeOptions']);
    Route::get('/options/data-status', [DataStatusController::class, 'getDataStatusOptions']);
+   Route::get('/options/supervisors', [SupervisorController::class, 'getSupervisorOptions']);
+   Route::get('/options/school-types', [SchoolTypeController::class, 'getSchoolTypeOptions']);
 });
