@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class SchoolController extends Controller
 {
    public function getSchool(Request $request) {
-      $schools = School::filter(request(['type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
+      $schools = School::filter(request(['search', 'type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($schools);
    }

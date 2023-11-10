@@ -45,6 +45,11 @@ class School extends Model
    }
 
    public function scopeFilter(Builder $query, Array $filters) {
+      $query->when($filters['search'] ?? false, fn (Builder $query, $search) => $query->whereHas('user', function (Builder $query) use ($search) {
+         return $query->where('name', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%");
+      })->orWhere('principal', 'like', "%$search%"));
+
       $query->when($filters['type'] ?? false, fn (Builder $query, $type) => $query->where('school_type_id', $type));
 
       $query->when($filters['supervisor'] ?? false, fn (Builder $query, $supervisor) => $query->where('supervisor_id', $supervisor));
