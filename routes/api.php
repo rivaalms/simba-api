@@ -39,6 +39,11 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::put('/school/{id}', [SchoolController::class, 'updateSchool']);
    Route::delete('/school', [SchoolController::class, 'deleteSchool']);
 
+   Route::get('/supervisors',  [SupervisorController::class, 'getSupervisor']);
+   Route::post('/supervisor', [SupervisorController::class, 'createSupervisor']);
+   Route::put('/supervisor/{id}', [SupervisorController::class, 'updateSupervisor']);
+   Route::delete('/supervisor', [SupervisorController::class, 'deleteSupervisor']);
+
    Route::get('/users', [UserController::class, 'getUser']);
 
    Route::get('/options/schools', [SchoolController::class, 'getSchoolOptions']);
