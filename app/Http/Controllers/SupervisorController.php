@@ -33,7 +33,7 @@ class SupervisorController extends Controller
          'name' => $validator['name'],
          'email' => $validator['email'],
          'userable_type' => Supervisor::MORPH_ALIAS,
-         'userable_ud' => $supervisor->id,
+         'userable_id' => $supervisor->id,
          'password' => Hash::make($validator['password'])
       ]);
 
