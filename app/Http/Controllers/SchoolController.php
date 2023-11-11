@@ -79,6 +79,7 @@ class SchoolController extends Controller
       $school = School::find($request->id);
       if (!$school) return $this->apiResponse(null, 'School not found', 422);
       $school->delete();
+      User::where('userable_type', School::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
       return $this->apiResponse(true, 'School has been deleted');
    }
 
