@@ -47,16 +47,18 @@ class SchoolController extends Controller
    }
 
    public function updateSchool(Request $request, int $id) {
+      $school = School::find($id);
+
       $validator = $request->validate([
          'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
+         'email' => "required|email|unique:users,email,{$school->user->id}",
          'school_type_id' => 'required|numeric',
          'supervisor_id' => 'required|numeric',
          'principal' => 'nullable|string',
          'address' => 'nullable|string'
       ]);
 
-      $school = School::find($id)->update([
+      $school->update([
          'school_type_id' => $validator['school_type_id'],
          'supervisor_id' => $validator['supervisor_id'],
          'principal' => $validator['principal'],

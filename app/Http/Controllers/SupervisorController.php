@@ -41,13 +41,15 @@ class SupervisorController extends Controller
    }
 
    public function updateSupervisor(Request $request, int $id) {
+      $supervisor = Supervisor::find($id);
+
       $validator = $request->validate([
          'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
-         'employee_number' => 'required|string|unique:supervisors,employee_number',
+         'email' => "required|email|unique:users,email,{$supervisor->user->id}",
+         'employee_number' => "required|string|unique:supervisors,employee_number,{$supervisor->id}",
       ]);
 
-      $supervisor = Supervisor::find($id)->update([
+      $supervisor->update([
          'employee_number' => $validator['employee_number']
       ]);
 
