@@ -4,6 +4,7 @@ use App\Http\Controllers\DataCategoryController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\DataStatusController;
 use App\Http\Controllers\DataTypeController;
+use App\Http\Controllers\OfficerController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SchoolTypeController;
 use App\Http\Controllers\SupervisorController;
@@ -43,6 +44,11 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/supervisor', [SupervisorController::class, 'createSupervisor']);
    Route::put('/supervisor/{id}', [SupervisorController::class, 'updateSupervisor']);
    Route::delete('/supervisor', [SupervisorController::class, 'deleteSupervisor']);
+
+   Route::get('/officers', [OfficerController::class, 'getOfficer']);
+   Route::post('/officer', [OfficerController::class, 'createOfficer']);
+   Route::put('/officer/{id}', [OfficerController::class, 'updateOfficer']);
+   Route::delete('/officer', [OfficerController::class, 'deleteOfficer']);
 
    Route::get('/users', [UserController::class, 'getUser']);
 
