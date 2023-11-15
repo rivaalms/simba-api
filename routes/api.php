@@ -5,8 +5,12 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\DataStatusController;
 use App\Http\Controllers\DataTypeController;
 use App\Http\Controllers\OfficerController;
+use App\Http\Controllers\ReligionController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\SchoolStudentController;
+use App\Http\Controllers\SchoolTeacherController;
 use App\Http\Controllers\SchoolTypeController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SupervisorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,9 +40,13 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::delete('/data', [DataController::class, 'deleteData']);
 
    Route::get('/schools', [SchoolController::class, 'getSchool']);
+   Route::get('/school/{id}', [SchoolController::class, 'getSchoolDetails']);
    Route::post('/school', [SchoolController::class, 'createSchool']);
    Route::put('/school/{id}', [SchoolController::class, 'updateSchool']);
    Route::delete('/school', [SchoolController::class, 'deleteSchool']);
+
+   Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
+   Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
 
    Route::get('/supervisors',  [SupervisorController::class, 'getSupervisor']);
    Route::post('/supervisor', [SupervisorController::class, 'createSupervisor']);
@@ -58,4 +66,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/options/data-status', [DataStatusController::class, 'getDataStatusOptions']);
    Route::get('/options/supervisors', [SupervisorController::class, 'getSupervisorOptions']);
    Route::get('/options/school-types', [SchoolTypeController::class, 'getSchoolTypeOptions']);
+
+   Route::get('/religions', [ReligionController::class, 'getReligions']);
+   Route::get('/subjects', [SubjectController::class, 'getSubjects']);
 });

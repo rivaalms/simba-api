@@ -15,6 +15,11 @@ class SchoolController extends Controller
       return $this->apiResponse($schools);
    }
 
+   public function getSchoolDetails(Request $request, int $id) {
+      $school = School::find($id);
+      return $this->apiResponse($school);
+   }
+
    public function createSchool(Request $request) {
       $validator = $request->validate([
          'name' => 'required|string',
