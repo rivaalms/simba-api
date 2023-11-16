@@ -21,7 +21,7 @@ class DataStatusController extends Controller
          'name' => $validator['name']
       ]);
 
-      return $this->apiResponse($status, 'Data status created successfully', 201);
+      return $this->apiResponse($status, 'Status data berhasil dibuat', 201);
    }
 
    public function update(Request $request, int $id) {
@@ -35,7 +35,7 @@ class DataStatusController extends Controller
          'name' => $validator['name']
       ]);
 
-      return $this->apiResponse(true, 'Data status updated successfully');
+      return $this->apiResponse(true, 'Status data berhasil diperbarui');
    }
 
    public function delete(Request $request) {
@@ -44,7 +44,7 @@ class DataStatusController extends Controller
       ]);
 
       DataStatus::find($validator['id'])->delete();
-      return $this->apiResponse(true, 'Data status has been deleted');
+      return $this->apiResponse(true, 'Status data berhasil dihapus');
    }
 
    public function getOptions() {

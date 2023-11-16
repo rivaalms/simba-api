@@ -17,7 +17,7 @@ class UserController extends Controller
          'password' => 'required'
       ]);
 
-      if ($validator->fails()) return $this->apiResponse(null, 'Invalid credentials format', 422);
+      if ($validator->fails()) return $this->apiResponse(null, 'Format kredensial tidak sesuai', 422);
 
       try {
          $user = User::where('email', $request->email)->firstOrFail();
@@ -26,15 +26,15 @@ class UserController extends Controller
          $token = $user->createToken('auth_token')->plainTextToken;
          $data = compact('user', 'token');
       } catch (Exception $e) {
-         return $this->apiResponse(null, 'Your credentials does not match our records', 401);
+         return $this->apiResponse(null, 'Kredensial Anda tidak sesuai dengan arsip kami', 401);
       }
 
-      return $this->apiResponse($data);
+      return $this->apiResponse($data, 'Login berhasil');
    }
 
    public function logout() {
       Auth::user()->tokens()->delete();
-      return $this->apiResponse(null);
+      return $this->apiResponse(null, 'Logout berhasil');
    }
 
    public function create(Array $data) {

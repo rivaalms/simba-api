@@ -31,7 +31,7 @@ class SchoolController extends Controller
          'address' => 'nullable|string'
       ]);
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Confirm password does not match the password', 422);
+      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
       $school = School::create([
          'school_type_id' => $validator['school_type_id'],
@@ -52,7 +52,7 @@ class SchoolController extends Controller
 
       $user = $userController->create($userData)->user;
 
-      return $this->apiResponse($user, 'New school created successfully', 201);
+      return $this->apiResponse($user, 'Sekolah berhasil dibuat', 201);
    }
 
    public function update(Request $request, int $id) {
@@ -79,7 +79,7 @@ class SchoolController extends Controller
          'email' => $validator['email']
       ]);
 
-      return $this->apiResponse(true, 'School updated successfully');
+      return $this->apiResponse(true, 'Sekolah berhasil diperbarui');
    }
 
    public function delete(Request $request) {
@@ -91,7 +91,7 @@ class SchoolController extends Controller
       if (!$school) return $this->apiResponse(null, 'School not found', 422);
       $school->delete();
       User::where('userable_type', School::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
-      return $this->apiResponse(true, 'School has been deleted');
+      return $this->apiResponse(true, 'Sekolah berhasil dihapus');
    }
 
    public function getOptions() {

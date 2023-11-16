@@ -32,7 +32,7 @@ class SupervisorController extends Controller
          'password' => 'required|min:8|string'
       ]);
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Confirm password does not match', 422);
+      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
       $supervisor = Supervisor::create([
          'employee_number' => $validator['employee_number']
@@ -50,7 +50,7 @@ class SupervisorController extends Controller
 
       $user = $userController->create($userData)->user;
 
-      return $this->apiResponse($user, 'New supervisor created successfully', 201);
+      return $this->apiResponse($user, 'Pengawas berhasil dibuat', 201);
    }
 
    public function update(Request $request, int $id) {
@@ -71,7 +71,7 @@ class SupervisorController extends Controller
          'email' => $validator['email']
       ]);
 
-      return $this->apiResponse(true, 'Supervisor updated successfully');
+      return $this->apiResponse(true, 'Pengawas berhasil diperbarui');
    }
 
    public function delete(Request $request) {
@@ -81,12 +81,12 @@ class SupervisorController extends Controller
 
       $supervisor = Supervisor::find($request->id);
 
-      if (!$supervisor) return $this->apiResponse(null, 'Supervisor not found', 422);
+      if (!$supervisor) return $this->apiResponse(null, 'Pengawas tidak ditemukan', 422);
 
       $supervisor->delete();
       User::where('userable_type', Supervisor::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
 
-      return $this->apiResponse(true, 'Supervisor has been deleted');
+      return $this->apiResponse(true, 'Pengawas berhasil dihapus');
    }
 
    public function getOptions() {

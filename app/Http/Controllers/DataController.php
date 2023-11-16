@@ -32,7 +32,7 @@ class DataController extends Controller
       $validator['path'] = Crypt::encryptString($path);
 
       $data = Data::create($validator);
-      return $this->apiResponse($data, 'New data created successfully', 201);
+      return $this->apiResponse($data, 'Data berhasil dibuat', 201);
    }
 
    public function update(Request $request, int $id) {
@@ -46,7 +46,7 @@ class DataController extends Controller
       $validator = array_diff_key($validator, array('file' => ''));
 
       $data = Data::find($id)->update($validator);
-      return $this->apiResponse($data, 'Data updated successfully');
+      return $this->apiResponse($data, 'Data berhasil diperbarui');
    }
 
    public function updateFile(Request $request, int $id) {
@@ -64,15 +64,15 @@ class DataController extends Controller
       $data->update([
          'path' => Crypt::encryptString($path)
       ]);
-      return $this->apiResponse(true, 'File updated successfully');
+      return $this->apiResponse(true, 'File berhasil diupload');
    }
 
    public function downloadFile(Request $request) {
       $data = Data::find($request->id);
-      if (!$data) return $this->apiResponse(null, 'Data not found', 422);
+      if (!$data) return $this->apiResponse(null, 'Data tidak ditemukan', 422);
 
       $path = Crypt::decryptString($data->path);
-      if (!Storage::exists($path)) return $this->apiResponse(null, 'File not found', 422);
+      if (!Storage::exists($path)) return $this->apiResponse(null, 'File tidak ditemukan', 422);
 
       return Storage::download($path);
    }
@@ -83,12 +83,12 @@ class DataController extends Controller
       ]);
 
       $data = Data::find($request->id);
-      if (!$data) return $this->apiResponse(null, 'Data not found', 422);
+      if (!$data) return $this->apiResponse(null, 'Data tidak ditemukan', 422);
 
       $path = Crypt::decryptString($data->path);
       if (Storage::exists($path)) Storage::delete($path);
 
       $data->delete();
-      return $this->apiResponse(true, 'Data has been deleted');
+      return $this->apiResponse(true, 'Data berhasil dihapus');
    }
 }

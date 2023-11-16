@@ -23,7 +23,7 @@ class OfficerController extends Controller
          'password' => 'required|min:8|string'
       ]);
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Confirm password does not match', 422);
+      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
       $officer = Officer::create([
          'employee_number' => $validator['employee_number']
@@ -41,7 +41,7 @@ class OfficerController extends Controller
 
       $user = $userController->create($userData)->user;
 
-      return $this->apiResponse($user, 'New officer created successfully', 201);
+      return $this->apiResponse($user, 'Officer baru berhasil dibuat', 201);
    }
 
    public function update(Request $request, $id) {
@@ -62,7 +62,7 @@ class OfficerController extends Controller
          'email' => $validator['email']
       ]);
 
-      return $this->apiResponse(true, 'Officer updated successfully');
+      return $this->apiResponse(true, 'Officer berhasil diperbarui');
    }
 
    public function delete(Request $request) {
@@ -71,11 +71,11 @@ class OfficerController extends Controller
       ]);
 
       $officer = Officer::find($request->id);
-      if (!$officer) return $this->apiResponse(null, 'Officer not found', 422);
+      if (!$officer) return $this->apiResponse(null, 'Officer tidak ditemukan', 422);
 
       $officer->delete();
       User::where('userable_type', Officer::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
 
-      return $this->apiResponse(true, 'Officer has been deleted');
+      return $this->apiResponse(true, 'Officer berhasil dihapus');
    }
 }
