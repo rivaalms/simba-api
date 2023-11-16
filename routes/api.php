@@ -46,7 +46,10 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::delete('/school', [SchoolController::class, 'deleteSchool']);
 
    Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
+   Route::post('/school-students', [SchoolStudentController::class, 'create']);
+
    Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
+   Route::post('/school-teachers', [SchoolTeacherController::class, 'create']);
 
    Route::get('/supervisors',  [SupervisorController::class, 'getSupervisor']);
    Route::get('/supervisor/{id}', [SupervisorController::class, 'getSupervisorDetails']);
@@ -70,4 +73,9 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::get('/religions', [ReligionController::class, 'getReligions']);
    Route::get('/subjects', [SubjectController::class, 'getSubjects']);
+
+   Route::get('/data-statuses', [DataStatusController::class, 'get']);
+   Route::post('/data-status', [DataStatusController::class, 'create']);
+   Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
+   Route::delete('/data-status', [DataStatusController::class, 'delete']);
 });
