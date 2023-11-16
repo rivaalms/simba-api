@@ -40,15 +40,19 @@ class SchoolController extends Controller
          'address' => $validator['address']
       ]);
 
-      $user = User::create([
+      $userController = new UserController;
+
+      $userData = [
          'name' => $validator['name'],
          'email' => $validator['email'],
          'userable_type' => School::MORPH_ALIAS,
          'userable_id' => $school->id,
          'password' => Hash::make($validator['password'])
-      ]);
+      ];
 
-      return $this->apiResponse($user->load(['userable']), 'New school created successfully', 201);
+      $user = $userController->create($userData)->user;
+
+      return $this->apiResponse($user, 'New school created successfully', 201);
    }
 
    public function update(Request $request, int $id) {

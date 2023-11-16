@@ -15,4 +15,8 @@ class Controller extends BaseController
 
       return response()->json(compact('success', 'message', 'data'), $status);
    }
+
+   public function jsonify($data) {
+      return json_decode(json_encode($data));
+   }
 }

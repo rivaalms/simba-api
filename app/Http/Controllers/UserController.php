@@ -37,15 +37,25 @@ class UserController extends Controller
       return $this->apiResponse(null);
    }
 
-   public function getUser(Request $request) {
-      if ($request->paginate) {
-         $users = User::paginate($request->perPage)->withQueryString();
-      } else {
-         $users = User::all();
-      }
+   public function create(Array $data) {
+      $validator = Validator::make($data, [
+         'name' => 'required|string',
+         'email' => 'required|email|unique:users,email',
+         'password' => 'required|min:8|string',
+         'userable_type' => 'nullable|string',
+         'userable_id' => 'nullable|integer|numeric'
+      ]);
 
-      foreach ($users as $u) $u->userable;
+      if ($validator->fails()) return parent::jsonify([
+         'success' => false,
+         'message' => $validator->errors()
+      ]);
 
-      return $this->apiResponse($users);
+      $user = User::create($validator->validated());
+
+      return parent::jsonify([
+         'success' => true,
+         'user' => $user->load(['userable'])
+      ]);
    }
 }
