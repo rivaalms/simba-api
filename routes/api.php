@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
 
    Route::get('/supervisors',  [SupervisorController::class, 'getSupervisor']);
+   Route::get('/supervisor/{id}', [SupervisorController::class, 'getSupervisorDetails']);
    Route::post('/supervisor', [SupervisorController::class, 'createSupervisor']);
    Route::put('/supervisor/{id}', [SupervisorController::class, 'updateSupervisor']);
    Route::delete('/supervisor', [SupervisorController::class, 'deleteSupervisor']);

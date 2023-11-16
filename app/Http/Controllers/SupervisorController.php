@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Supervisor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SupervisorController extends Controller
 {
@@ -13,6 +14,14 @@ class SupervisorController extends Controller
       $supervisors = Supervisor::filter(request(['search']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($supervisors);
+   }
+
+   public function getSupervisorDetails(Request $request, int $id) {
+      $supervisor = Supervisor::with(['schools' => function (HasMany $query) {
+         $query->without('supervisor');
+      }])->find($id);
+
+      return $this->apiResponse($supervisor);
    }
 
    public function createSupervisor(Request $request) {

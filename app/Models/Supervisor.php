@@ -14,7 +14,7 @@ class Supervisor extends Model
 
    protected $guarded = ['id'];
    protected $with = [
-      'user:id,name,email,userable_type,userable_id'
+      'user:id,name,email,userable_type,userable_id',
    ];
 
    public function user() {
