@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class OfficerController extends Controller
 {
-   public function getOfficer (Request $request) {
+   public function get (Request $request) {
       $officers = Officer::filter(request(['search']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($officers);
    }
 
-   public function createOfficer(Request $request) {
+   public function create(Request $request) {
       $validator = $request->validate([
          'name' => 'required|string',
          'email' => 'required|email|unique:users,email',
@@ -40,7 +40,7 @@ class OfficerController extends Controller
       return $this->apiResponse($user->load(['userable']), 'New officer created successfully', 201);
    }
 
-   public function updateOfficer(Request $request, $id) {
+   public function update(Request $request, $id) {
       $officer = Officer::find($id);
 
       $validator = $request->validate([
@@ -61,7 +61,7 @@ class OfficerController extends Controller
       return $this->apiResponse(true, 'Officer updated successfully');
    }
 
-   public function deleteOfficer (Request $request) {
+   public function delete(Request $request) {
       $request->validate([
          'id' => 'required'
       ]);

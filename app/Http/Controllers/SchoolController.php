@@ -9,18 +9,18 @@ use Illuminate\Support\Facades\Hash;
 
 class SchoolController extends Controller
 {
-   public function getSchool(Request $request) {
+   public function get(Request $request) {
       $schools = School::filter(request(['search', 'type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($schools);
    }
 
-   public function getSchoolDetails(Request $request, int $id) {
+   public function getDetails(Request $request, int $id) {
       $school = School::find($id);
       return $this->apiResponse($school);
    }
 
-   public function createSchool(Request $request) {
+   public function create(Request $request) {
       $validator = $request->validate([
          'name' => 'required|string',
          'email' => 'required|email|unique:users,email',
@@ -51,7 +51,7 @@ class SchoolController extends Controller
       return $this->apiResponse($user->load(['userable']), 'New school created successfully', 201);
    }
 
-   public function updateSchool(Request $request, int $id) {
+   public function update(Request $request, int $id) {
       $school = School::find($id);
 
       $validator = $request->validate([
@@ -78,7 +78,7 @@ class SchoolController extends Controller
       return $this->apiResponse(true, 'School updated successfully');
    }
 
-   public function deleteSchool(Request $request) {
+   public function delete(Request $request) {
       $request->validate([
          'id' => 'required'
       ]);
@@ -90,7 +90,7 @@ class SchoolController extends Controller
       return $this->apiResponse(true, 'School has been deleted');
    }
 
-   public function getSchoolOptions() {
+   public function getOptions() {
       $schools = School::select('id')->get();
       $data = [];
 

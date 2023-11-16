@@ -47,7 +47,7 @@ class DataStatusController extends Controller
       return $this->apiResponse(true, 'Data status has been deleted');
    }
 
-   public function getDataStatusOptions () {
+   public function getOptions() {
       $status = DataStatus::select('name as label', 'id as value')->get();
       return $this->apiResponse($status);
    }

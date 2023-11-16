@@ -11,13 +11,13 @@ use Illuminate\Http\Response;
 
 class DataController extends Controller
 {
-   public function getData(Request $request) {
+   public function get(Request $request) {
       $data = Data::filter(request(['school', 'type', 'category', 'status', 'year']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($data);
    }
 
-   public function createData(Request $request) {
+   public function create(Request $request) {
       $validator = $request->validate([
          'school_id' => 'required',
          'year' => 'required',
@@ -35,7 +35,7 @@ class DataController extends Controller
       return $this->apiResponse($data, 'New data created successfully', 201);
    }
 
-   public function updateData(Request $request, int $id) {
+   public function update(Request $request, int $id) {
       $validator = $request->validate([
          'school_id' => 'required',
          'year' => 'required',
@@ -49,7 +49,7 @@ class DataController extends Controller
       return $this->apiResponse($data, 'Data updated successfully');
    }
 
-   public function updateDataFile(Request $request, int $id) {
+   public function updateFile(Request $request, int $id) {
       $validator = $request->validate([
          'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet'
       ]);
@@ -67,7 +67,7 @@ class DataController extends Controller
       return $this->apiResponse(true, 'File updated successfully');
    }
 
-   public function downloadData(Request $request) {
+   public function downloadFile(Request $request) {
       $data = Data::find($request->id);
       if (!$data) return $this->apiResponse(null, 'Data not found', 422);
 
@@ -77,7 +77,7 @@ class DataController extends Controller
       return Storage::download($path);
    }
 
-   public function deleteData(Request $request) {
+   public function delete(Request $request) {
       $request->validate([
          'id' => 'required'
       ]);

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-   public function getSubjects(Request $request) {
+   public function get(Request $request) {
       $subjects = Subject::select('id', 'name', 'abbreviation')->get();
       return $this->apiResponse($subjects);
    }

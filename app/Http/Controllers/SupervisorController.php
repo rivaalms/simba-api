@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SupervisorController extends Controller
 {
-   public function getSupervisor(Request $request) {
+   public function get(Request $request) {
       $supervisors = Supervisor::filter(request(['search']))->latest()->paginate($request->per_page)->withQueryString();
 
       return $this->apiResponse($supervisors);
    }
 
-   public function getSupervisorDetails(Request $request, int $id) {
+   public function getDetails(Request $request, int $id) {
       $supervisor = Supervisor::with(['schools' => function (HasMany $query) {
          $query->without('supervisor');
       }])->find($id);
@@ -24,7 +24,7 @@ class SupervisorController extends Controller
       return $this->apiResponse($supervisor);
    }
 
-   public function createSupervisor(Request $request) {
+   public function create(Request $request) {
       $validator = $request->validate([
          'name' => 'required|string',
          'email' => 'required|email|unique:users,email',
@@ -49,7 +49,7 @@ class SupervisorController extends Controller
       return $this->apiResponse($user->load(['userable']), 'New supervisor created successfully', 201);
    }
 
-   public function updateSupervisor(Request $request, int $id) {
+   public function update(Request $request, int $id) {
       $supervisor = Supervisor::find($id);
 
       $validator = $request->validate([
@@ -70,7 +70,7 @@ class SupervisorController extends Controller
       return $this->apiResponse(true, 'Supervisor updated successfully');
    }
 
-   public function deleteSupervisor(Request $request) {
+   public function delete(Request $request) {
       $request->validate([
          'id' => 'required'
       ]);
@@ -85,7 +85,7 @@ class SupervisorController extends Controller
       return $this->apiResponse(true, 'Supervisor has been deleted');
    }
 
-   public function getSupervisorOptions() {
+   public function getOptions() {
       $supervisors = Supervisor::select('id')->distinct('id')->get();
       $data = [];
 

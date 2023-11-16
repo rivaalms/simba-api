@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ReligionController extends Controller
 {
-   public function getReligions (Request $request) {
+   public function get(Request $request) {
       $religions = Religion::select('id', 'name')->get();
       return $this->apiResponse($religions);
    }
