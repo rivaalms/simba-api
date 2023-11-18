@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data;
+use App\Models\DataType;
+use App\Models\DataStatus;
+use App\Models\DataCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Response;
 
 class DataController extends Controller
 {
@@ -90,5 +93,44 @@ class DataController extends Controller
 
       $data->delete();
       return $this->apiResponse(true, 'Data berhasil dihapus');
+   }
+
+   public function count() {
+      $query = Data::all();
+      $status = DataStatus::all();
+      $category = DataCategory::all();
+      $type = DataType::all();
+
+      $total = $query->count();
+
+      $data_by_status = array();
+      foreach ($status as $s) {
+         array_push($data_by_status, array(
+            'name' => $s->name,
+            'count' => $query->where('data_status_id', $s->id)->count()
+         ));
+      }
+
+      $data_by_category = array();
+      foreach ($category as $c) {
+         $cSum = 0;
+         $data_by_type = array();
+         $_type = $type->where('data_category_id', $c->id);
+         foreach ($_type as $t) {
+            $_total = $query->where('data_type_id', $t->id)->count();
+            $cSum += $_total;
+            array_push($data_by_type, array(
+               'name' => $t->name,
+               'count' => $_total
+            ));
+         }
+         array_push($data_by_category, array(
+            'name' => $c->name,
+            'total' => $cSum,
+            'data_by_type' => $data_by_type
+         ));
+      }
+
+      return $this->apiResponse(compact('total', 'data_by_status', 'data_by_category'));
    }
 }

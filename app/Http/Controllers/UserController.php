@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Officer;
 use Exception;
+use App\Models\User;
+use App\Models\School;
+use App\Models\Supervisor;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -57,5 +61,23 @@ class UserController extends Controller
          'success' => true,
          'user' => $user->load(['userable'])
       ]);
+   }
+
+   public function count() {
+      $query = User::all();
+      $total = $query->count();
+      $user_by_type = [
+         School::MORPH_ALIAS => 0,
+         Supervisor::MORPH_ALIAS => 0,
+         Officer::MORPH_ALIAS => 0,
+         'admin' => 0
+      ];
+
+      foreach ($user_by_type as $key => $val) {
+         if ($key === 'admin') $user_by_type[$key] = $query->where('userable_type', null)->count();
+         else $user_by_type[$key] = $query->where('userable_type', $key)->count();
+      }
+
+      return $this->apiResponse(compact('total', 'user_by_type'));
    }
 }

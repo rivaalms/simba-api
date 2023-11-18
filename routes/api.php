@@ -33,11 +33,14 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/logout', [UserController::class, 'logout']);
 
    Route::get('/data', [DataController::class, 'get']);
+   Route::get('/data/count', [DataController::class, 'count']);
    Route::post('/data', [DataController::class, 'create']);
    Route::put('/data/{id}', [DataController::class, 'update']);
    Route::post('/data/file/{id}', [DataController::class, 'updateFile']);
    Route::post('/data/download', [DataController::class, 'downloadFile']);
    Route::delete('/data', [DataController::class, 'delete']);
+
+   Route::get('/users/count', [UserController::class, 'count']);
 
    Route::get('/schools', [SchoolController::class, 'get']);
    Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
