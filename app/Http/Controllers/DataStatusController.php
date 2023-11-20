@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class DataStatusController extends Controller
 {
    public function get() {
-      $status = DataStatus::all();
+      $status = DataStatus::filter(request(['search']))->get();
       return $this->apiResponse($status);
    }
 
