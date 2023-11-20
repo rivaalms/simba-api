@@ -84,4 +84,9 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/data-category', [DataCategoryController::class, 'create']);
    Route::put('/data-category/{id}', [DataCategoryController::class, 'update']);
    Route::delete('/data-category', [DataCategoryController::class, 'delete']);
+
+   Route::get('/data-types', [DataTypeController::class, 'get']);
+   Route::post('/data-type', [DataTypeController::class, 'create']);
+   Route::put('/data-type/{id}', [DataTypeController::class, 'update']);
+   Route::delete('/data-type', [DataTypeController::class, 'delete']);
 });
