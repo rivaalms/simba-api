@@ -65,13 +65,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::put('/officer/{id}', [OfficerController::class, 'update']);
    Route::delete('/officer', [OfficerController::class, 'delete']);
 
-   Route::get('/options/schools', [SchoolController::class, 'getOptions']);
-   Route::get('/options/data-categories', [DataCategoryController::class, 'getOPtions']);
-   Route::get('/options/data-types', [DataTypeController::class, 'getOptions']);
-   Route::get('/options/data-status', [DataStatusController::class, 'getOptions']);
-   Route::get('/options/supervisors', [SupervisorController::class, 'getOptions']);
-   Route::get('/options/school-types', [SchoolTypeController::class, 'getOptions']);
-
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
    Route::post('/data-status', [DataStatusController::class, 'create']);
    Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
@@ -101,4 +94,13 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/religion', [ReligionController::class, 'create']);
    Route::put('/religion/{id}', [ReligionController::class, 'update']);
    Route::delete('/religion', [ReligionController::class, 'delete']);
+
+   Route::prefix('options')->group(function() {
+      Route::get('/schools', [SchoolController::class, 'getOptions']);
+      Route::get('/data-categories', [DataCategoryController::class, 'getOPtions']);
+      Route::get('/data-types', [DataTypeController::class, 'getOptions']);
+      Route::get('/data-status', [DataStatusController::class, 'getOptions']);
+      Route::get('/supervisors', [SupervisorController::class, 'getOptions']);
+      Route::get('/school-types', [SchoolTypeController::class, 'getOptions']);
+   });
 });
