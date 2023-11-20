@@ -79,4 +79,9 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/data-status', [DataStatusController::class, 'create']);
    Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
    Route::delete('/data-status', [DataStatusController::class, 'delete']);
+
+   Route::get('/data-categories', [DataCategoryController::class, 'get']);
+   Route::post('/data-category', [DataCategoryController::class, 'create']);
+   Route::put('/data-category/{id}', [DataCategoryController::class, 'update']);
+   Route::delete('/data-category', [DataCategoryController::class, 'delete']);
 });
