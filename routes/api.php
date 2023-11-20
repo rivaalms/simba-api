@@ -73,7 +73,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/options/school-types', [SchoolTypeController::class, 'getOptions']);
 
    Route::get('/religions', [ReligionController::class, 'get']);
-   Route::get('/subjects', [SubjectController::class, 'get']);
 
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
    Route::post('/data-status', [DataStatusController::class, 'create']);
@@ -94,4 +93,9 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/school-type', [SchoolTypeController::class, 'create']);
    Route::put('/school-type/{id}', [SchoolTypeController::class, 'update']);
    Route::delete('/school-type', [SchoolTypeController::class, 'delete']);
+
+   Route::get('/subjects', [SubjectController::class, 'get']);
+   Route::post('/subject', [SubjectController::class, 'create']);
+   Route::put('/subject/{id}', [SubjectController::class, 'update']);
+   Route::delete('/subject', [SubjectController::class, 'delete']);
 });
