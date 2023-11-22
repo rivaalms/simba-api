@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,5 +47,9 @@ class User extends Authenticatable
 
    public function redrafts() {
       return $this->hasMany(Redraft::class);
+   }
+
+   public function scopeFilter(Builder $query, Array $filters) {
+      $query->when($filters['search'] ?? false, fn (Builder $query, $search) => $query->where('name', 'like', "%$search%")->orWhere('email', 'like', "%$search%"));
    }
 }

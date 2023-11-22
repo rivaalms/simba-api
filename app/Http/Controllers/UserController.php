@@ -63,6 +63,20 @@ class UserController extends Controller
       ]);
    }
 
+   public function get(Request $request) {
+      $users = User::filter(request(['search']))->with('userable')->get();
+      $users->transform(function ($user) {
+         switch ($user->userable_type) {
+            case School::MORPH_ALIAS: unset($user->userable->supervisor->user); break;
+            case Supervisor::MORPH_ALIAS:
+            case Officer::MORPH_ALIAS: unset($user->userable->user); break;
+            default: unset($user->userable); break;
+         }
+         return $user;
+      });
+      return $this->apiResponse($users);
+   }
+
    public function count() {
       $query = User::all();
       $total = $query->count();

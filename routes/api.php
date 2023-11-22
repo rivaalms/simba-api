@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/data/download', [DataController::class, 'downloadFile']);
    Route::delete('/data', [DataController::class, 'delete']);
 
+   Route::get('/users', [UserController::class, 'get']);
    Route::get('/users/count', [UserController::class, 'count']);
 
    Route::get('/schools', [SchoolController::class, 'get']);
