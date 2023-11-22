@@ -19,4 +19,11 @@ class Controller extends BaseController
    public function jsonify($data) {
       return json_decode(json_encode($data));
    }
+
+   public function generateSlug($string) {
+      $slug = str_replace(' ', '-', $string);
+      $slug = preg_replace('/[^A-Za-z0-9\-]/', '', $slug);
+      $slug = strtolower($slug);
+      return $slug;
+   }
 }
