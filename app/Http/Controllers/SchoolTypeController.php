@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class SchoolTypeController extends Controller
 {
    public function get(Request $request) {
-      $types = SchoolType::filter(request(['search']))->get();
+      $types = SchoolType::filter(request(['search']))->latest()->get();
       return $this->apiResponse($types);
    }
 
