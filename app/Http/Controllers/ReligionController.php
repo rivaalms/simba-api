@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class ReligionController extends Controller
 {
    public function get(Request $request) {
-      $religions = Religion::filter(request(['search']))->get();
+      $query = Religion::filter(request(['search']))->latest();
+      if ($request->per_page > 0) $religions = $query->paginate($request->per_page)->withQueryString();
+      else $religions = $query->get();
       return $this->apiResponse($religions);
    }
 
