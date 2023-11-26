@@ -12,6 +12,8 @@ class DataType extends Model
 
    protected $guarded = ['id'];
 
+   protected $with = ['category:id,name,slug'];
+
    public function data() {
       return $this->hasMany(Data::class);
    }
@@ -21,7 +23,7 @@ class DataType extends Model
    }
 
    public function scopeFilter(Builder $query, Array $filters) {
-      $query->when($filters['search'] ?? false, fn (Builder $query, $search) => $query->where('name', 'ike', "%$search%")->orWhere('slug', 'like', "%$search%"));
+      $query->when($filters['search'] ?? false, fn (Builder $query, $search) => $query->where('name', 'like', "%$search%")->orWhere('slug', 'like', "%$search%"));
 
       $query->when($filters['category'] ?? false, fn (Builder $query, $category) => $query->where('data_category_id', $category));
    }

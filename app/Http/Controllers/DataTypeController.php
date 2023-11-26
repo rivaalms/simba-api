@@ -4,20 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\DataType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class DataTypeController extends Controller
 {
    public function get(Request $request) {
-      $types = DataType::filter(request(['search', 'category']))->get();
+      $types = DataType::filter(request(['search', 'category']))->latest()->paginate($request->per_page)->withQueryString();
       return $this->apiResponse($types);
    }
 
    public function create(Request $request) {
       $validator = $request->validate([
          'name' => 'required|unique:data_types,name',
-         'slug' => 'required|unique:data_types,slug',
          'data_category_id' => 'required|numeric|exists:data_categories,id'
       ]);
+      $validator['slug'] = parent::generateSlug($validator['name']);
 
       $type = DataType::create($validator);
       return $this->apiResponse($type, 'Tipe data baru berhasil dibuat');
@@ -27,10 +28,10 @@ class DataTypeController extends Controller
       $type = DataType::find($id);
 
       $validator = $request->validate([
-         'name' => 'required',
-         'slug' => 'required',
+         'name' => [ 'required', Rule::unique('data_types', 'name')->ignore($id) ],
          'data_category_id' => 'required|numeric'
       ]);
+      $validator['slug'] = parent::generateSlug($validator['name']);
 
       $type->update($validator);
       return $this->apiResponse(true, 'Tipe data berhasil diperbarui');
