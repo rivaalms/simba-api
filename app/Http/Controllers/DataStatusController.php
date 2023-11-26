@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 
 class DataStatusController extends Controller
 {
-   public function get() {
-      $status = DataStatus::filter(request(['search']))->get();
+   public function get(Request $request) {
+      $query = DataStatus::filter(request(['search']))->latest();
+      if ($request->per_page > 0) $status = $query->paginate($request->per_page)->withQueryString();
+      else $status = $query->get();
       return $this->apiResponse($status);
    }
 

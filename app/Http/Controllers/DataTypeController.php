@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class DataTypeController extends Controller
 {
    public function get(Request $request) {
-      $types = DataType::filter(request(['search', 'category']))->latest()->paginate($request->per_page)->withQueryString();
+      $query = DataType::filter(request(['search', 'category']))->latest();
+      if ($request->per_page > 0) $types = $query->paginate($request->per_page)->withQueryString();
+      else $types = $query->get();
       return $this->apiResponse($types);
    }
 

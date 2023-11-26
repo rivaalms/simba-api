@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class DataCategoryController extends Controller
 {
    public function get(Request $request) {
-      $categories = DataCategory::filter(request(['search']))->get();
+      $query = DataCategory::filter(request(['search']))->latest();
+      if ($request->per_page > 0) $categories = $query->paginate($request->per_page)->withQueryString();
+      else $categories = $query->get();
       return $this->apiResponse($categories);
    }
 

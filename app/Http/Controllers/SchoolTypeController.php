@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class SchoolTypeController extends Controller
 {
    public function get(Request $request) {
-      $types = SchoolType::filter(request(['search']))->latest()->get();
+      $query = SchoolType::filter(request(['search']))->latest();
+      if ($request->per_page > 0) $types = $query->paginate($request->per_page)->withQueryString();
+      else $types = $query->get();
       return $this->apiResponse($types);
    }
 
