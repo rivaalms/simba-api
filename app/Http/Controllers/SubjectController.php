@@ -9,7 +9,9 @@ use Illuminate\Validation\Rule;
 class SubjectController extends Controller
 {
    public function get(Request $request) {
-      $subjects = Subject::filter(request(['search']))->get();
+      $query = Subject::filter(request(['search']))->latest();
+      if ($request->per_page > 0) $subjects = $query->paginate($request->per_page)->withQueryString();
+      else $subjects = $query->get();
       return $this->apiResponse($subjects);
    }
 
