@@ -20,6 +20,11 @@ class DataController extends Controller
       return $this->apiResponse($data);
    }
 
+   public function getSingle(Request $request, int $id) {
+      $data = Data::find($id);
+      return $this->apiResponse($data);
+   }
+
    public function create(Request $request) {
       $validator = $request->validate([
          'school_id' => 'required',

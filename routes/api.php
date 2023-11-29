@@ -5,6 +5,7 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\DataStatusController;
 use App\Http\Controllers\DataTypeController;
 use App\Http\Controllers\OfficerController;
+use App\Http\Controllers\RedraftController;
 use App\Http\Controllers\ReligionController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SchoolStudentController;
@@ -33,12 +34,18 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/logout', [UserController::class, 'logout']);
 
    Route::get('/data', [DataController::class, 'get']);
+   Route::get('/data/{id}', [DataController::class, 'getSingle']);
    Route::get('/data/count', [DataController::class, 'count']);
    Route::post('/data', [DataController::class, 'create']);
    Route::put('/data/{id}', [DataController::class, 'update']);
    Route::post('/data/file/{id}', [DataController::class, 'updateFile']);
    Route::post('/data/download', [DataController::class, 'downloadFile']);
    Route::delete('/data', [DataController::class, 'delete']);
+
+   Route::get('/redrafts/{data_id}', [RedraftController::class, 'get']);
+   Route::post('/redraft', [RedraftController::class, 'create']);
+   Route::put('/redraft/{id}', [RedraftController::class, 'update']);
+   Route::delete('/redraft/{id}', [RedraftController::class, 'delete']);
 
    Route::get('/users', [UserController::class, 'get']);
    Route::get('/users/count', [UserController::class, 'count']);

@@ -15,6 +15,7 @@ return new class extends Migration
          $table->id();
          $table->foreignId('user_id');
          $table->foreignId('data_id');
+         $table->bigInteger('reply_to')->nullable();
          $table->text('message');
          $table->timestamps();
       });
