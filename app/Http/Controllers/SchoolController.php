@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateSchoolRequest;
+use App\Http\Requests\UpdateSchoolRequest;
 use App\Models\User;
 use App\Models\School;
 use Illuminate\Http\Request;
@@ -20,64 +22,31 @@ class SchoolController extends Controller
       return $this->apiResponse($school);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
-         'password' => 'required|min:8|string',
-         'school_type_id' => 'required|numeric',
-         'supervisor_id' => 'required|numeric',
-         'principal' => 'nullable|string',
-         'address' => 'nullable|string'
-      ]);
+   public function create(CreateSchoolRequest $request) {
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_school = $request->safe()->except(array_keys($_user));
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
+      if ($_user['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
-      $school = School::create([
-         'school_type_id' => $validator['school_type_id'],
-         'supervisor_id' => $validator['supervisor_id'],
-         'principal' => $validator['principal'],
-         'address' => $validator['address']
-      ]);
+      $school = School::create($_school);
 
-      $userController = new UserController;
+      $userC = new UserController;
 
-      $userData = [
-         'name' => $validator['name'],
-         'email' => $validator['email'],
-         'userable_type' => School::MORPH_ALIAS,
-         'userable_id' => $school->id,
-         'password' => Hash::make($validator['password'])
-      ];
+      $_user['userable_type'] = School::MORPH_ALIAS;
+      $_user['userable_id'] = $school->id;
+      $_user['password'] = Hash::make($_user['password']);
 
-      $user = $userController->create($userData)->user;
+      $user = $userC->create($_user)->user;
 
       return $this->apiResponse($user, 'Sekolah berhasil dibuat', 201);
    }
 
-   public function update(Request $request, int $id) {
-      $school = School::find($id);
+   public function update(UpdateSchoolRequest $request, int $id) {
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_school = $request->safe()->except(array_keys($_user));
 
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => "required|email|unique:users,email,{$school->user->id}",
-         'school_type_id' => 'required|numeric',
-         'supervisor_id' => 'required|numeric',
-         'principal' => 'nullable|string',
-         'address' => 'nullable|string'
-      ]);
-
-      $school->update([
-         'school_type_id' => $validator['school_type_id'],
-         'supervisor_id' => $validator['supervisor_id'],
-         'principal' => $validator['principal'],
-         'address' => $validator['address']
-      ]);
-
-      $user = User::where('userable_id', $id)->where('userable_type', School::MORPH_ALIAS)->update([
-         'name' => $validator['name'],
-         'email' => $validator['email']
-      ]);
+      School::find($id)->update($_school);
+      User::where('userable_id', $id)->where('userable_type', School::MORPH_ALIAS)->update($_user);
 
       return $this->apiResponse(true, 'Sekolah berhasil diperbarui');
    }

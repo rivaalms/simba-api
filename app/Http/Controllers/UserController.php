@@ -42,24 +42,24 @@ class UserController extends Controller
    }
 
    public function create(Array $data) {
-      $validator = Validator::make($data, [
-         'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
-         'password' => 'required|min:8|string',
-         'userable_type' => 'nullable|string',
-         'userable_id' => 'nullable|integer|numeric'
-      ]);
-
-      if ($validator->fails()) return parent::jsonify([
-         'success' => false,
-         'message' => $validator->errors()
-      ]);
-
-      $user = User::create($validator->validated());
+      $user = User::create($data);
+      $user->load(['userable' => function (MorphTo $morphTo) {
+         $morphTo->constrain([
+            School::class => function ($query) {
+               $query->without('user');
+            },
+            Supevisor::class => function ($query) {
+               $query->without('user');
+            },
+            Officer::class => function ($query) {
+               $query->without('user');
+            }
+         ]);
+      }]);
 
       return parent::jsonify([
          'success' => true,
-         'user' => $user->load(['userable'])
+         'user' => $user
       ]);
    }
 
