@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormCommentRequest;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -15,33 +16,17 @@ class CommentController extends Controller
       return $this->apiResponse($comments);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'user_id' => 'required|numeric',
-         'data_id' => 'required|numeric',
-         'message' => 'required',
-         'reply_to' => 'nullable|exists:App\Models\Comment,id'
-      ]);
-
-      $comment = Comment::create($validator);
-      return $this->apiResponse($comment, 'Komentar berhasil dikirim');
+   public function create(FormCommentRequest $request) {
+      $comment = Comment::create($request->validated());
+      return $this->apiResponse($comment, 'Komentar berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $comment = Comment::find($id);
-
-      $validator = $request->validate([
-         'user_id' => 'required|numeric',
-         'data_id' => 'required|numeric',
-         'message' => 'required',
-         'reply_to' => 'nullable|exists:App\Models\Comment,id'
-      ]);
-
-      $comment->update($validator);
+   public function update(FormCommentRequest $request, int $id) {
+      Comment::find($id)->update($request->validated());
       return $this->apiResponse(true, 'Komentar berhasil diperbarui');
    }
 
-   public function delete(Request $request, int $id) {
+   public function delete(int $id) {
       $comment = Comment::find($id);
       if (!!count($comment->replies)) {
          foreach ($comment->replies as $r) {
