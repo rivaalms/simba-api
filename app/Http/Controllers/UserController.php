@@ -48,7 +48,7 @@ class UserController extends Controller
             School::class => function ($query) {
                $query->without('user');
             },
-            Supevisor::class => function ($query) {
+            Supervisor::class => function ($query) {
                $query->without('user');
             },
             Officer::class => function ($query) {

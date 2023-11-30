@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSupervisorRequest;
 use App\Models\User;
 use App\Models\Supervisor;
 use Illuminate\Http\Request;
@@ -24,53 +25,29 @@ class SupervisorController extends Controller
       return $this->apiResponse($supervisor);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
-         'employee_number' => 'required|string|unique:supervisors,employee_number',
-         'password' => 'required|min:8|string'
-      ]);
+   public function create(FormSupervisorRequest $request) {
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_supervisor = $request->safe()->except(array_keys($_user));
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
+      if ($_user['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
-      $supervisor = Supervisor::create([
-         'employee_number' => $validator['employee_number']
-      ]);
+      $supervisor = Supervisor::create($_supervisor);
 
-      $userController = new UserController;
+      $_user['userable_type'] = Supervisor::MORPH_ALIAS;
+      $_user['userable_id'] = $supervisor->id;
 
-      $userData = [
-         'name' => $validator['name'],
-         'email' => $validator['email'],
-         'userable_type' => Supervisor::MORPH_ALIAS,
-         'userable_id' => $supervisor->id,
-         'password' => Hash::make($validator['password'])
-      ];
+      $userC = new UserController;
 
-      $user = $userController->create($userData)->user;
-
-      return $this->apiResponse($user, 'Pengawas berhasil dibuat', 201);
+      $user = $userC->create($_user)->user;
+      return $this->apiResponse($user, 'Pengawas berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $supervisor = Supervisor::find($id);
+   public function update(FormSupervisorRequest $request, int $id) {
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_supervisor = $request->safe()->except(array_keys($_user));
 
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => "required|email|unique:users,email,{$supervisor->user->id}",
-         'employee_number' => "required|string|unique:supervisors,employee_number,{$supervisor->id}",
-      ]);
-
-      $supervisor->update([
-         'employee_number' => $validator['employee_number']
-      ]);
-
-      $user = User::where('userable_id', $id)->where('userable_type', Supervisor::MORPH_ALIAS)->update([
-         'name' => $validator['name'],
-         'email' => $validator['email']
-      ]);
-
+      Supervisor::find($id)->update($_supervisor);
+      User::where('userable_id', $id)->where('userable_type', Supervisor::MORPH_ALIAS)->update($_user);
       return $this->apiResponse(true, 'Pengawas berhasil diperbarui');
    }
 
