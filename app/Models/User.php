@@ -45,8 +45,8 @@ class User extends Authenticatable
       return $this->morphTo();
    }
 
-   public function redrafts() {
-      return $this->hasMany(Redraft::class);
+   public function comments() {
+      return $this->hasMany(Comment::class);
    }
 
    public function scopeFilter(Builder $query, Array $filters) {

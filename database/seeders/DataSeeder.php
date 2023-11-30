@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Data;
-use App\Models\Redraft;
+use App\Models\Comment;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -15,6 +15,6 @@ class DataSeeder extends Seeder
    public function run(): void
    {
       Data::factory()->count(100)->create();
-      Redraft::factory(50)->create();
+      Comment::factory(50)->create();
    }
 }

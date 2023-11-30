@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Redraft extends Model
+class Comment extends Model
 {
    use HasFactory;
 
@@ -24,10 +24,10 @@ class Redraft extends Model
    }
 
    public function reply_to() {
-      return $this->belongsTo(Redraft::class, 'reply_to', 'id');
+      return $this->belongsTo(Comment::class, 'reply_to', 'id');
    }
 
    public function replies() {
-      return $this->hasMany(Redraft::class, 'reply_to', 'id');
+      return $this->hasMany(Comment::class, 'reply_to', 'id');
    }
 }

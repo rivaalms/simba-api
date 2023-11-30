@@ -5,7 +5,7 @@ use App\Http\Controllers\DataController;
 use App\Http\Controllers\DataStatusController;
 use App\Http\Controllers\DataTypeController;
 use App\Http\Controllers\OfficerController;
-use App\Http\Controllers\RedraftController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReligionController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\SchoolStudentController;
@@ -42,10 +42,10 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::post('/data/download', [DataController::class, 'downloadFile']);
    Route::delete('/data', [DataController::class, 'delete']);
 
-   Route::get('/redrafts/{data_id}', [RedraftController::class, 'get']);
-   Route::post('/redraft', [RedraftController::class, 'create']);
-   Route::put('/redraft/{id}', [RedraftController::class, 'update']);
-   Route::delete('/redraft/{id}', [RedraftController::class, 'delete']);
+   Route::get('/comments/{data_id}', [CommentController::class, 'get']);
+   Route::post('/comment', [CommentController::class, 'create']);
+   Route::put('/comment/{id}', [CommentController::class, 'update']);
+   Route::delete('/comment/{id}', [CommentController::class, 'delete']);
 
    Route::get('/users', [UserController::class, 'get']);
    Route::get('/users/count', [UserController::class, 'count']);

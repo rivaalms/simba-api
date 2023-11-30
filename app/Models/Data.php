@@ -32,8 +32,8 @@ class Data extends Model
       return $this->belongsTo(DataStatus::class, 'data_status_id', 'id');
    }
 
-   public function redrafts() {
-      return $this->hasMany(Redraft::class);
+   public function comments() {
+      return $this->hasMany(Comment::class);
    }
 
    public function scopeFilter(Builder $query, Array $filters) {

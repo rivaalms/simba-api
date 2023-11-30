@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Redraft;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 
-class RedraftController extends Controller
+class CommentController extends Controller
 {
    public function get(Request $request, int $data_id) {
-      $redrafts = Redraft::where('data_id', $data_id)->whereNull('reply_to')->latest()->get();
-      return $this->apiResponse($redrafts);
+      $comments = Comment::where('data_id', $data_id)->whereNull('reply_to')->latest()->get();
+      return $this->apiResponse($comments);
    }
 
    public function create(Request $request) {
@@ -17,15 +17,15 @@ class RedraftController extends Controller
          'user_id' => 'required|numeric',
          'data_id' => 'required|numeric',
          'message' => 'required',
-         'reply_to' => 'required|numeric|exist:App\Models\Redraft,id'
+         'reply_to' => 'required|numeric|exist:App\Models\Comment,id'
       ]);
 
-      $redraft = Redraft::create($validator);
-      return $this->apiResponse($redraft, 'Pesan berhasil dikirim');
+      $comment = Comment::create($validator);
+      return $this->apiResponse($comment, 'Pesan berhasil dikirim');
    }
 
    public function update(Request $request, int $id) {
-      $redraft = Redraft::find($id);
+      $comment = Comment::find($id);
 
       $validator = $request->validate([
          'user_id' => 'required|numeric',
@@ -33,12 +33,12 @@ class RedraftController extends Controller
          'message' => 'required'
       ]);
 
-      $redraft->update($validator);
+      $comment->update($validator);
       return $this->apiResponse(true, 'Pesan berhasil diperbarui');
    }
 
    public function delete(Request $request, int $id) {
-      Redraft::find($id)->delete();
+      Comment::find($id)->delete();
       return $this->apiResponse(true, 'Pesan berhasil dihapus');
    }
 }
