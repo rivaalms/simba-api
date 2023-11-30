@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSupervisorRequest;
 use App\Models\Officer;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,53 +16,28 @@ class OfficerController extends Controller
       return $this->apiResponse($officers);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => 'required|email|unique:users,email',
-         'employee_number' => 'required|string|unique:supervisors,employee_number',
-         'password' => 'required|min:8|string'
-      ]);
+   public function create(FormSupervisorRequest $request) {
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_officer = $request->safe()->except(array_keys($_user));
 
-      if ($validator['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
+      if ($_user['password'] !== $request->confirm_password) return $this->apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
 
-      $officer = Officer::create([
-         'employee_number' => $validator['employee_number']
-      ]);
+      $officer = Officer::create($_officer);
+      $_user['userable_type'] = Officer::MORPH_ALIAS;
+      $_user['userable_id'] = $officer->id;
 
-      $userController = new UserController;
+      $userC = new UserController;
+      $user = $userC->create($_user)->user;
 
-      $userData = [
-         'name' => $validator['name'],
-         'email' => $validator['email'],
-         'userable_type' => Officer::MORPH_ALIAS,
-         'userable_id' => $officer->id,
-         'password' => Hash::make($validator['password'])
-      ];
-
-      $user = $userController->create($userData)->user;
-
-      return $this->apiResponse($user, 'Officer baru berhasil dibuat', 201);
+      return $this->apiResponse($user, 'Officer baru berhasil dibuat');
    }
 
    public function update(Request $request, $id) {
-      $officer = Officer::find($id);
+      $_user = $request->safe()->only(User::USER_FIELDS);
+      $_officer = $request->safe()->except(array_keys($_user));
 
-      $validator = $request->validate([
-         'name' => 'required|string',
-         'email' => "required|email|unique:users,email,{$officer->user->id}",
-         'employee_number' => "required|string|unique:officers,employee_number,{$officer->id}",
-      ]);
-
-      $officer->update([
-         'employee_number' => $validator['employee_number']
-      ]);
-
-      $user = User::where('userable_id', $officer->id)->where('userable_type', Officer::MORPH_ALIAS)->update([
-         'name' => $validator['name'],
-         'email' => $validator['email']
-      ]);
-
+      Officer::find($id)->update($_officer);
+      User::where('userable_type', Officer::MORPH_ALIAS)->where('userable_id', $id)->update($_user);
       return $this->apiResponse(true, 'Officer berhasil diperbarui');
    }
 
