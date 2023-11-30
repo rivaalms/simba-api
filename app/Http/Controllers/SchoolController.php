@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateSchoolRequest;
-use App\Http\Requests\UpdateSchoolRequest;
+use App\Http\Requests\FormSchoolRequest;
 use App\Models\User;
 use App\Models\School;
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class SchoolController extends Controller
       return $this->apiResponse($school);
    }
 
-   public function create(CreateSchoolRequest $request) {
+   public function create(FormSchoolRequest $request) {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_school = $request->safe()->except(array_keys($_user));
 
@@ -41,7 +40,7 @@ class SchoolController extends Controller
       return $this->apiResponse($user, 'Sekolah berhasil dibuat', 201);
    }
 
-   public function update(UpdateSchoolRequest $request, int $id) {
+   public function update(FormSchoolRequest $request, int $id) {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_school = $request->safe()->except(array_keys($_user));
 
