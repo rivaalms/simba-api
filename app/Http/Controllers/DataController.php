@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormDataRequest;
 use App\Models\Data;
 use App\Models\DataType;
 use App\Models\DataStatus;
 use App\Models\DataCategory;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,54 +24,37 @@ class DataController extends Controller
       return $this->apiResponse($data);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'school_id' => 'required',
-         'year' => 'required',
-         'data_type_id' => 'required',
-         'data_status_id' => 'required',
-      ]);
+   public function create(FormDataRequest $request) {
+      $_data = $request->safe()->except(['file']);
+      $_file = $request->validated('file');
 
-      $extension = $request->file('file')->getClientOriginalExtension();
-      $path = $validator['file']->storeAs('files', time().".$extension");
+      $extension = $_file->getClientOriginalExtension();
+      $path = $_file->storeAs('files', time().".$extension");
+      $_data['path'] = Crypt::encryptString($path);
 
-      $validator = array_diff_key($validator, array('file' => ''));
-      $validator['path'] = Crypt::encryptString($path);
-
-      $data = Data::create($validator);
-      return $this->apiResponse($data, 'Data berhasil dibuat', 201);
+      $data = Data::create($_data);
+      return $this->apiResponse($data, 'Data berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $validator = $request->validate([
-         'school_id' => 'required',
-         'year' => 'required',
-         'data_type_id' => 'required',
-         'data_status_id' => 'required',
-      ]);
-
-      $validator = array_diff_key($validator, array('file' => ''));
-
-      $data = Data::find($id)->update($validator);
-      return $this->apiResponse($data, 'Data berhasil diperbarui');
+   public function update(FormDataRequest $request, int $id) {
+      $_data = $request->validated();
+      Data::find($id)->update($_data);
+      return $this->apiResponse(true, 'Data berhasil diperbarui');
    }
 
-   public function updateFile(Request $request, int $id) {
-      $validator = $request->validate([
-         'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx,application/msword,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.google-apps.document,application/vnd.google-apps.spreadsheet'
-      ]);
-
+   public function updateFile(FormDataRequest $request, int $id) {
+      $_file = $request->validated('file');
       $data = Data::find($id);
       $oldPath = Crypt::decryptString($data->path);
       if (Storage::exists($oldPath)) Storage::delete($oldPath);
 
-      $extension = $request->file('file')->getClientOriginalExtension();
-      $path = $validator['file']->storeAs('files', time()."$extension");
+      $extension = $_file->getClientOriginalExtension();
+      $path = $_file->storeAs('files', time().".$extension");
 
       $data->update([
          'path' => Crypt::encryptString($path)
       ]);
-      return $this->apiResponse(true, 'File berhasil diupload');
+      return $this->apiResponse(true, 'File pada data berhasil diperbarui');
    }
 
    public function downloadFile(Request $request) {

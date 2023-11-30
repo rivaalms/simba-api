@@ -36,9 +36,9 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data', [DataController::class, 'get']);
    Route::get('/data/{id}', [DataController::class, 'getSingle']);
    Route::get('/data/count', [DataController::class, 'count']);
-   Route::post('/data', [DataController::class, 'create']);
-   Route::put('/data/{id}', [DataController::class, 'update']);
-   Route::post('/data/file/{id}', [DataController::class, 'updateFile']);
+   Route::post('/data', [DataController::class, 'create'])->name('createData');
+   Route::put('/data/{id}', [DataController::class, 'update'])->name('updateData');
+   Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
    Route::post('/data/download', [DataController::class, 'downloadFile']);
    Route::delete('/data', [DataController::class, 'delete']);
 
