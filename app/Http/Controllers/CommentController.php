@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
    public function get(Request $request, int $data_id) {
-      $comments = Comment::with(['replies' => function (HasMany $query) {
-         $query->without('replies');
-      }])->where('data_id', $data_id)->whereNull('reply_to')->latest()->get();
+      $comments = Comment::with(['replies' => function (HasMany $query) use ($request) {
+         $query->without('replies')->sortScope($request->sort);
+      }])->where('data_id', $data_id)->whereNull('reply_to')->sortScope($request->sort)->get();
+
       return $this->apiResponse($comments);
    }
 

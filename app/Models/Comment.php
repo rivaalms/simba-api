@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,5 +30,10 @@ class Comment extends Model
 
    public function replies() {
       return $this->hasMany(Comment::class, 'reply_to', 'id');
+   }
+
+   public function scopeSortScope(Builder $query, String|null $sort) {
+      if ($sort === 'latest') $query->latest();
+      else $query->oldest();
    }
 }
