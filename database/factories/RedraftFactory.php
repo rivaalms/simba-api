@@ -20,7 +20,8 @@ class RedraftFactory extends Factory
       $user_id = mt_rand(1, 30);
       $data_id = mt_rand(1, 100);
       $message = fake()->text();
+      $reply_to = null;
 
-      return compact('user_id', 'data_id', 'message');
+      return compact('user_id', 'data_id', 'reply_to', 'message');
    }
 }
