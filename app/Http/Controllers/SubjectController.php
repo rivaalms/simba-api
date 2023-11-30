@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSubjectRequest;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,25 +16,15 @@ class SubjectController extends Controller
       return $this->apiResponse($subjects);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:subjects,name',
-         'abbreviation' => 'required|unique:subjects,abbreviation'
-      ]);
-
-      $subject = Subject::create($validator);
+   public function create(FormSubjectRequest $request) {
+      $_subject = $request->validated();
+      $subject = Subject::create($_subject);
       return $this->apiResponse($subject, 'Mata pelajaran baru berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $subject = Subject::find($id);
-
-      $validator = $request->validate([
-         'name' => ['required', Rule::unique('subjects', 'name')->ignore($subject->id)],
-         'abbreviation' => ['required', Rule::unique('subjects', 'abbreviation')->ignore($subject->id)]
-      ]);
-
-      $subject->update($validator);
+   public function update(FormSubjectRequest $request, int $id) {
+      $_subject = $request->validated();
+      Subject::find($id)->update($_subject);
       return $this->apiResponse(true, 'Mata pelajaran berhasil diperbarui');
    }
 

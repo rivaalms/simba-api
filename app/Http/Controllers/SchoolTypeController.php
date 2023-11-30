@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSchoolTypeRequest;
 use App\Models\SchoolType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,23 +16,15 @@ class SchoolTypeController extends Controller
       return $this->apiResponse($types);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:school_types,name'
-      ]);
-
-      $type = SchoolType::create($validator);
+   public function create(FormSchoolTypeRequest $request) {
+      $_type = $request->validated();
+      $type = SchoolType::create($_type);
       return $this->apiResponse($type, 'Tipe sekolah baru berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $type = SchoolType::find($id);
-
-      $validator = $request->validate([
-         'name' => ['required', Rule::unique('school_types', 'name')->ignore($type->id)]
-      ]);
-
-      $type->update($validator);
+   public function update(FormSchoolTypeRequest $request, int $id) {
+      $_type = $request->validated();
+      SchoolType::find($id)->update($_type);
       return $this->apiResponse(true, 'Tipe sekolah berhasil diperbarui');
    }
 

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSchoolStudentRequest;
 use App\Models\SchoolStudent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SchoolStudentController extends Controller
 {
@@ -13,19 +13,15 @@ class SchoolStudentController extends Controller
       return $this->apiResponse($students);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'school_id' => 'required',
-         'year' => 'required',
-         'grade' => 'required',
-         'religion_id' => 'required',
-         'count' => 'required|integer|numeric'
-      ]);
+   public function create(FormSchoolStudentRequest $request) {
+      $_students = $request->validated();
+      $students = SchoolStudent::where('school_id', $_students['school_id'])
+         ->where('year', 'like', '%'.$_students['year'].'%')
+         ->where('grade', $_students['grade'])
+         ->first();
 
-      $students = SchoolStudent::where('school_id', $validator['school_id'])->where('year', 'like', '%'.$validator['year'].'%')->where('grade', $validator['grade'])->first();
-
-      if ($students) $students->update($validator);
-      else SchoolStudent::create($validator);
+      if ($students) $students->update($_students);
+      else SchoolStudent::create($_students);
 
       return $this->apiResponse(true, 'Data siswa berhasil ditambahkan');
    }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormSchoolTeacherRequest;
 use App\Models\SchoolTeacher;
 use Illuminate\Http\Request;
 
@@ -12,18 +13,15 @@ class SchoolTeacherController extends Controller
       return $this->apiResponse($teachers);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'school_id' => 'required|integer|numeric',
-         'year' => 'required',
-         'subject_id' => 'required|integer|numeric',
-         'count' => 'required|integer|numeric'
-      ]);
+   public function create(FormSchoolTeacherRequest $request) {
+      $_teachers = $request->validated();
+      $teachers = SchoolTeacher::where('school_id', $_teachers['school_id'])
+         ->where('subject_id', $_teachers['subject_id'])
+         ->where('year', 'like', '%'.$_teachers['year'].'%')
+         ->first();
 
-      $teachers = SchoolTeacher::where('school_id', $validator['school_id'])->where('subject_id', $validator['subject_id'])->where('year', 'like', '%'.$validator['year'].'%')->first();
-
-      if ($teachers) $teachers->update($validator);
-      else SchoolTeacher::create($validator);
+      if ($teachers) $teachers->update($_teachers);
+      else SchoolTeacher::create($_teachers);
 
       return $this->apiResponse(true, 'Data guru berhasil ditambahkan');
    }

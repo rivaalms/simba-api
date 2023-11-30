@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormDataCategoryRequest;
 use App\Models\DataCategory;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class DataCategoryController extends Controller
 {
@@ -15,26 +15,15 @@ class DataCategoryController extends Controller
       return $this->apiResponse($categories);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:data_categories,name',
-      ]);
-      $validator['slug'] = parent::generateSlug($validator['name']);
-
-      $category = DataCategory::create($validator);
-      return $this->apiResponse($category, 'Katagori data berhasil dibuat');
+   public function create(FormDataCategoryRequest $request) {
+      $_category = $request->validated();
+      $category = DataCategory::create($_category);
+      return $this->apiResponse($category, 'Kategory data berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $category = DataCategory::find($id);
-
-      $validator = $request->validate([
-         'name' => [ 'required', Rule::unique('data_categories', 'name')->ignore($id) ],
-      ]);
-      $validator['slug'] = parent::generateSlug($validator['name']);
-
-      $category->update($validator);
-
+   public function update(FormDataCategoryRequest $request, int $id) {
+      $_category = $request->validated();
+      DataCategory::find($id)->update($_category);
       return $this->apiResponse(true, 'Kategori data berhasil diperbarui');
    }
 

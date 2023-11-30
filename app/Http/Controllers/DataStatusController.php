@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormDataStatusRequest;
 use App\Models\DataStatus;
 use Illuminate\Http\Request;
 
@@ -14,29 +15,15 @@ class DataStatusController extends Controller
       return $this->apiResponse($status);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:data_statuses,name'
-      ]);
-
-      $status = DataStatus::create([
-         'name' => $validator['name']
-      ]);
-
+   public function create(FormDataStatusRequest $request) {
+      $_status = $request->validated();
+      $status = DataStatus::create($_status);
       return $this->apiResponse($status, 'Status data berhasil dibuat', 201);
    }
 
-   public function update(Request $request, int $id) {
-      $status = DataStatus::find($id);
-
-      $validator = $request->validate([
-         'name' => 'required'
-      ]);
-
-      $status->update([
-         'name' => $validator['name']
-      ]);
-
+   public function update(FormDataStatusRequest $request, int $id) {
+      $_status = $request->validated();
+      DataStatus::find($id)->update($_status);
       return $this->apiResponse(true, 'Status data berhasil diperbarui');
    }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormReligionRequest;
 use App\Models\Religion;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,22 +16,15 @@ class ReligionController extends Controller
       return $this->apiResponse($religions);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:religions,name'
-      ]);
-      $religion = Religion::create($validator);
+   public function create(FormReligionRequest $request) {
+      $_religion = $request->validated();
+      $religion = Religion::create($_religion);
       return $this->apiResponse($religion, 'Data agama baru berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $religion = Religion::find($id);
-
-      $validator = $request->validate([
-         'name' => [ 'required', Rule::unique('religions', 'name')->ignore($religion->id) ]
-      ]);
-
-      $religion->update($validator);
+   public function update(FormReligionRequest $request, int $id) {
+      $_religion = $request->validated();
+      Religion::find($id)->update($_religion);
       return $this->apiResponse(true, 'Data agama berhasil diperbarui');
    }
 

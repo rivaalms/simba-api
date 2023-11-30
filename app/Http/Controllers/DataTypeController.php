@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormDataTypeRequest;
 use App\Models\DataType;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class DataTypeController extends Controller
 {
@@ -15,27 +15,15 @@ class DataTypeController extends Controller
       return $this->apiResponse($types);
    }
 
-   public function create(Request $request) {
-      $validator = $request->validate([
-         'name' => 'required|unique:data_types,name',
-         'data_category_id' => 'required|numeric|exists:data_categories,id'
-      ]);
-      $validator['slug'] = parent::generateSlug($validator['name']);
-
-      $type = DataType::create($validator);
+   public function create(FormDataTypeRequest $request) {
+      $_type = $request->validated();
+      $type = DataType::create($_type);
       return $this->apiResponse($type, 'Tipe data baru berhasil dibuat');
    }
 
-   public function update(Request $request, int $id) {
-      $type = DataType::find($id);
-
-      $validator = $request->validate([
-         'name' => [ 'required', Rule::unique('data_types', 'name')->ignore($id) ],
-         'data_category_id' => 'required|numeric'
-      ]);
-      $validator['slug'] = parent::generateSlug($validator['name']);
-
-      $type->update($validator);
+   public function update(FormDataTypeRequest $request, int $id) {
+      $_type = $request->validated();
+      DataType::find($id)->update($_type);
       return $this->apiResponse(true, 'Tipe data berhasil diperbarui');
    }
 
