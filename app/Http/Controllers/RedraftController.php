@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 class RedraftController extends Controller
 {
    public function get(Request $request, int $data_id) {
-      $redrafts = Redraft::where('data_id', $data_id)->latest()->get();
-      // $data = Redraft::mapRedrafts($redrafts);
+      $redrafts = Redraft::where('data_id', $data_id)->whereNull('reply_to')->latest()->get();
       return $this->apiResponse($redrafts);
    }
 
@@ -17,7 +16,8 @@ class RedraftController extends Controller
       $validator = $request->validate([
          'user_id' => 'required|numeric',
          'data_id' => 'required|numeric',
-         'message' => 'required'
+         'message' => 'required',
+         'reply_to' => 'required|numeric|exist:App\Models\Redraft,id'
       ]);
 
       $redraft = Redraft::create($validator);

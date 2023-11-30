@@ -11,7 +11,8 @@ class Redraft extends Model
 
    protected $guarded = ['id'];
    protected $with = [
-      'user:id,name,email,userable_type'
+      'user:id,name,email,userable_type',
+      'replies'
    ];
 
    public function data() {
@@ -22,8 +23,11 @@ class Redraft extends Model
       return $this->belongsTo(User::class);
    }
 
-   // public static function mapRedrafts($data) {
-   //    $hasChildren = $data->whereNotNull('parent');
-   //    dd($hasChildren);
-   // }
+   public function reply_to() {
+      return $this->belongsTo(Redraft::class, 'reply_to', 'id');
+   }
+
+   public function replies() {
+      return $this->hasMany(Redraft::class, 'reply_to', 'id');
+   }
 }
