@@ -10,7 +10,6 @@ use App\Models\School;
 use App\Models\Supervisor;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,7 +39,7 @@ class UserController extends Controller
 
    public function logout()
    {
-      Auth::user()->tokens()->delete();
+      request()->user()->currentAccessToken()->delete();
       return $this->apiResponse(null, 'Logout berhasil');
    }
 
@@ -69,22 +68,19 @@ class UserController extends Controller
 
    public function get(Request $request)
    {
-      $users = User::filter(request(['search']))->with('userable')->get();
-      $users->transform(function ($user) {
-         switch ($user->userable_type) {
-            case School::MORPH_ALIAS:
-               unset($user->userable->supervisor->user);
-               break;
-            case Supervisor::MORPH_ALIAS:
-            case Officer::MORPH_ALIAS:
-               unset($user->userable->user);
-               break;
-            default:
-               unset($user->userable);
-               break;
-         }
-         return $user;
-      });
+      $users = User::filter(request(['search']))->with(['userable' => function (MorphTo $morphTo) {
+         $morphTo->constrain([
+            School::class => function ($query) {
+               $query->without('user');
+            },
+            Supervisor::class => function ($query) {
+               $query->without('user');
+            },
+            Officer::class => function ($query) {
+               $query->without('user');
+            }
+         ]);
+      }])->get();
       return $this->apiResponse($users);
    }
 
