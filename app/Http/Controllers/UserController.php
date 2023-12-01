@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormUserRequest;
 use App\Models\Comment;
 use App\Models\Officer;
 use Exception;
@@ -27,8 +28,16 @@ class UserController extends Controller
       try {
          $user = User::where('email', $request->email)->firstOrFail();
          if (!Hash::check($request->password, $user->password)) throw new Exception();
-         if ($request->header('UserableType')) $user->userable;
-         $token = $user->createToken('auth_token')->plainTextToken;
+
+         if ($user->userable_type) {
+            $user->load('userable');
+            $tokenAbility = $user->userable_type;
+         } else {
+            $tokenAbility = '*';
+         }
+
+         $token = $user->createToken('auth_token', [$tokenAbility])->plainTextToken;
+
          $data = compact('user', 'token');
       } catch (Exception $e) {
          return $this->apiResponse(null, 'Kredensial Anda tidak sesuai dengan arsip kami', 401);
@@ -91,6 +100,20 @@ class UserController extends Controller
       Comment::where('user_id', $user->id)->delete();
       $userQuery->delete();
       return true;
+   }
+
+   public function update(FormUserRequest $request, int $id)
+   {
+      $currentUser = $request->user();
+
+      if ($id !== $currentUser->id) return $this->apiResponse(null, 'Pengguna tidak sama', 403);
+
+      $_user = $request->safe()->except(['password']);
+      $_password = $request->safe()->only('password')['password'];
+
+      if (!Hash::check($_password, $currentUser->password)) return $this->apiResponse(null, 'Kata sandi salah', 422);
+      $currentUser->update($_user);
+      return $this->apiResponse(true, 'Pengguna berhasil diperbarui');
    }
 
    public function count()

@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::delete('/comment/{id}', [CommentController::class, 'delete']);
 
    Route::get('/users', [UserController::class, 'get']);
+   Route::put('/user/{id}', [UserController::class, 'update']);
    Route::get('/users/count', [UserController::class, 'count']);
 
    Route::get('/schools', [SchoolController::class, 'get']);
