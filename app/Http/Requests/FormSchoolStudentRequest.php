@@ -24,7 +24,7 @@ class FormSchoolStudentRequest extends FormRequest
    public function rules(): array
    {
       return [
-         'school_id' => 'requried|exists:schools,id',
+         'school_id' => 'required|exists:schools,id',
          'year' => 'required',
          'grade' => 'required|numeric',
          'religion_id' => 'required|exists:religions,id',

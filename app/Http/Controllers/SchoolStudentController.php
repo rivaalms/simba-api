@@ -18,6 +18,7 @@ class SchoolStudentController extends Controller
       $students = SchoolStudent::where('school_id', $_students['school_id'])
          ->where('year', 'like', '%'.$_students['year'].'%')
          ->where('grade', $_students['grade'])
+         ->where('religion_id', $_students['religion_id'])
          ->first();
 
       if ($students) $students->update($_students);
