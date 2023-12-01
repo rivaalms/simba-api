@@ -124,5 +124,6 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::get('/supervisors', [SupervisorController::class, 'getOptions']);
       Route::get('/school-types', [SchoolTypeController::class, 'getOptions']);
       Route::get('/religions', [ReligionController::class, 'getOptions']);
+      Route::get('/subjects', [SubjectController::class, 'getOptions']);
    });
 });

@@ -36,4 +36,10 @@ class SubjectController extends Controller
       Subject::find($id)->delete();
       return $this->apiResponse(true, 'Mata pelajaran berhasil dihapus');
    }
+
+   public function getOptions()
+   {
+      $subjects = Subject::select('name as label', 'id as value')->get()->toArray();
+      return $this->apiResponse($subjects);
+   }
 }

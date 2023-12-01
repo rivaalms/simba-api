@@ -26,7 +26,7 @@ class FormSchoolTeacherRequest extends FormRequest
       return [
          'school_id' => 'required|numeric|exists:schools,id',
          'year' => 'required',
-         'subject' => 'required|numeric|exists:subjects,id',
+         'subject_id' => 'required|numeric|exists:subjects,id',
          'count' => 'required|numeric'
       ];
    }
