@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormDataRequest;
+use App\Models\Comment;
 use App\Models\Data;
 use App\Models\DataType;
 use App\Models\DataStatus;
@@ -78,7 +79,7 @@ class DataController extends Controller
 
       $filePath = Crypt::decryptString($data->path);
       if (Storage::exists($filePath)) Storage::delete($filePath);
-
+      Comment::where('data_id', $id)->delete();
       $data->delete();
       return $this->apiResponse(true, 'Data berhasil dihapus');
    }

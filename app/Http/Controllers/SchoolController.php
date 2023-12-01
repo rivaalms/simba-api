@@ -56,7 +56,7 @@ class SchoolController extends Controller
    public function delete(int $id)
    {
       School::find($id)->delete();
-      User::where('userable_type', School::MORPH_ALIAS)->where('userable_id', $id)->delete();
+      (new UserController())->delete($id, School::MORPH_ALIAS);
       return $this->apiResponse(true, 'Sekolah berhasil dihapus');
    }
 

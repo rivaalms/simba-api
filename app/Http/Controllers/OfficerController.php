@@ -46,7 +46,7 @@ class OfficerController extends Controller
    public function delete(int $id)
    {
       Officer::find($id)->delete();
-      User::where('userable_type', Officer::MORPH_ALIAS)->where('userable_id', $id)->delete();
+      (new UserController())->delete($id, Officer::MORPH_ALIAS);
       return $this->apiResponse(true, 'Officer berhasil dihapus');
    }
 }

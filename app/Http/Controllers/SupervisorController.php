@@ -57,7 +57,7 @@ class SupervisorController extends Controller
    public function delete(int $id)
    {
       Supervisor::find($id)->delete();
-      User::where('userable_type', Supervisor::MORPH_ALIAS)->where('userable_id', $id)->delete();
+      (new UserController())->delete($id, Supervisor::MORPH_ALIAS);
       return $this->apiResponse(true, 'Pengawas berhasil dihapus');
    }
 

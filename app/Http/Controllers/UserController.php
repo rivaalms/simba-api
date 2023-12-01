@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Officer;
 use Exception;
 use App\Models\User;
@@ -15,7 +16,8 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-   public function login(Request $request) {
+   public function login(Request $request)
+   {
       $validator = Validator::make($request->only('email', 'password'), [
          'email' => 'required|email',
          'password' => 'required'
@@ -36,12 +38,14 @@ class UserController extends Controller
       return $this->apiResponse($data, 'Login berhasil');
    }
 
-   public function logout() {
+   public function logout()
+   {
       Auth::user()->tokens()->delete();
       return $this->apiResponse(null, 'Logout berhasil');
    }
 
-   public function create(Array $data) {
+   public function create(array $data)
+   {
       $user = User::create($data);
       $user->load(['userable' => function (MorphTo $morphTo) {
          $morphTo->constrain([
@@ -63,21 +67,38 @@ class UserController extends Controller
       ]);
    }
 
-   public function get(Request $request) {
+   public function get(Request $request)
+   {
       $users = User::filter(request(['search']))->with('userable')->get();
       $users->transform(function ($user) {
          switch ($user->userable_type) {
-            case School::MORPH_ALIAS: unset($user->userable->supervisor->user); break;
+            case School::MORPH_ALIAS:
+               unset($user->userable->supervisor->user);
+               break;
             case Supervisor::MORPH_ALIAS:
-            case Officer::MORPH_ALIAS: unset($user->userable->user); break;
-            default: unset($user->userable); break;
+            case Officer::MORPH_ALIAS:
+               unset($user->userable->user);
+               break;
+            default:
+               unset($user->userable);
+               break;
          }
          return $user;
       });
       return $this->apiResponse($users);
    }
 
-   public function count() {
+   public function delete(int $id, String $userable)
+   {
+      $userQuery = User::where('userable_type', $userable)->where('userable_id', $id);
+      $user = $userQuery->first();
+      Comment::where('user_id', $user->id)->delete();
+      $userQuery->delete();
+      return true;
+   }
+
+   public function count()
+   {
       $query = User::all();
       $total = $query->count();
       $user_by_type = [
