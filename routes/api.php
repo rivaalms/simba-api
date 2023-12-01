@@ -33,76 +33,88 @@ Route::post('/login', [UserController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function() {
    Route::post('/logout', [UserController::class, 'logout']);
 
+   Route::middleware('ability:admin')->group(function () {
+      Route::delete('/data/{id}', [DataController::class, 'delete']);
+      Route::put('/comment/{id}', [CommentController::class, 'update']);
+      Route::get('/data/count', [DataController::class, 'count']);
+
+      Route::get('/users', [UserController::class, 'get']);
+      Route::get('/users/count', [UserController::class, 'count']);
+
+      Route::post('/school', [SchoolController::class, 'create']);
+      Route::put('/school/{id}', [SchoolController::class, 'update']);
+      Route::delete('/school/{id}', [SchoolController::class, 'delete']);
+
+      Route::post('/supervisor', [SupervisorController::class, 'create']);
+      Route::put('/supervisor/{id}', [SupervisorController::class, 'update']);
+      Route::delete('/supervisor/{id}', [SupervisorController::class, 'delete']);
+
+      Route::get('/officers', [OfficerController::class, 'get']);
+      Route::post('/officer', [OfficerController::class, 'create']);
+      Route::put('/officer/{id}', [OfficerController::class, 'update']);
+      Route::delete('/officer/{id}', [OfficerController::class, 'delete']);
+
+      Route::post('/data-status', [DataStatusController::class, 'create']);
+      Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
+      Route::delete('/data-status/{id}', [DataStatusController::class, 'delete']);
+
+      Route::post('/data-category', [DataCategoryController::class, 'create']);
+      Route::put('/data-category/{id}', [DataCategoryController::class, 'update']);
+      Route::delete('/data-category/{id}', [DataCategoryController::class, 'delete']);
+
+      Route::post('/data-type', [DataTypeController::class, 'create']);
+      Route::put('/data-type/{id}', [DataTypeController::class, 'update']);
+      Route::delete('/data-type/{id}', [DataTypeController::class, 'delete']);
+
+      Route::post('/school-type', [SchoolTypeController::class, 'create']);
+      Route::put('/school-type/{id}', [SchoolTypeController::class, 'update']);
+      Route::delete('/school-type/{id}', [SchoolTypeController::class, 'delete']);
+
+      Route::post('/subject', [SubjectController::class, 'create']);
+      Route::put('/subject/{id}', [SubjectController::class, 'update']);
+      Route::delete('/subject/{id}', [SubjectController::class, 'delete']);
+
+      Route::post('/religion', [ReligionController::class, 'create']);
+      Route::put('/religion/{id}', [ReligionController::class, 'update']);
+      Route::delete('/religion/{id}', [ReligionController::class, 'delete']);
+   });
+
+   Route::middleware('ability:school')->group(function () {
+      Route::post('/data', [DataController::class, 'create'])->name('createData');
+      Route::put('/data/{id}', [DataController::class, 'update'])->name('updateData');
+      Route::post('/school-students', [SchoolStudentController::class, 'create']);
+      Route::post('/school-teachers', [SchoolTeacherController::class, 'create']);
+      Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
+   });
+
+   Route::middleware('ability:supervisor,officer')->group(function () {
+      Route::get('/schools', [SchoolController::class, 'get']);
+      Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
+
+      Route::get('/supervisors',  [SupervisorController::class, 'get']);
+      Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
+   });
+
    Route::get('/data', [DataController::class, 'get']);
    Route::get('/data/{id}', [DataController::class, 'getSingle']);
-   Route::get('/data/count', [DataController::class, 'count']);
-   Route::post('/data', [DataController::class, 'create'])->name('createData');
-   Route::put('/data/{id}', [DataController::class, 'update'])->name('updateData');
-   Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
    Route::post('/data/download', [DataController::class, 'downloadFile']);
-   Route::delete('/data/{id}', [DataController::class, 'delete']);
 
    Route::get('/comments/{data_id}', [CommentController::class, 'get']);
    Route::post('/comment', [CommentController::class, 'create']);
-   Route::put('/comment/{id}', [CommentController::class, 'update']);
    Route::delete('/comment/{id}', [CommentController::class, 'delete']);
 
-   Route::get('/users', [UserController::class, 'get']);
    Route::put('/user/{id}', [UserController::class, 'update']);
-   Route::get('/users/count', [UserController::class, 'count']);
-
-   Route::get('/schools', [SchoolController::class, 'get']);
-   Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
-   Route::post('/school', [SchoolController::class, 'create']);
-   Route::put('/school/{id}', [SchoolController::class, 'update']);
-   Route::delete('/school/{id}', [SchoolController::class, 'delete']);
 
    Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
-   Route::post('/school-students', [SchoolStudentController::class, 'create']);
-
    Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
-   Route::post('/school-teachers', [SchoolTeacherController::class, 'create']);
-
-   Route::get('/supervisors',  [SupervisorController::class, 'get']);
-   Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
-   Route::post('/supervisor', [SupervisorController::class, 'create']);
-   Route::put('/supervisor/{id}', [SupervisorController::class, 'update']);
-   Route::delete('/supervisor/{id}', [SupervisorController::class, 'delete']);
-
-   Route::get('/officers', [OfficerController::class, 'get']);
-   Route::post('/officer', [OfficerController::class, 'create']);
-   Route::put('/officer/{id}', [OfficerController::class, 'update']);
-   Route::delete('/officer/{id}', [OfficerController::class, 'delete']);
 
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
-   Route::post('/data-status', [DataStatusController::class, 'create']);
-   Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
-   Route::delete('/data-status/{id}', [DataStatusController::class, 'delete']);
-
    Route::get('/data-categories', [DataCategoryController::class, 'get']);
-   Route::post('/data-category', [DataCategoryController::class, 'create']);
-   Route::put('/data-category/{id}', [DataCategoryController::class, 'update']);
-   Route::delete('/data-category/{id}', [DataCategoryController::class, 'delete']);
-
    Route::get('/data-types', [DataTypeController::class, 'get']);
-   Route::post('/data-type', [DataTypeController::class, 'create']);
-   Route::put('/data-type/{id}', [DataTypeController::class, 'update']);
-   Route::delete('/data-type/{id}', [DataTypeController::class, 'delete']);
-
    Route::get('/school-types', [SchoolTypeController::class, 'get']);
-   Route::post('/school-type', [SchoolTypeController::class, 'create']);
-   Route::put('/school-type/{id}', [SchoolTypeController::class, 'update']);
-   Route::delete('/school-type/{id}', [SchoolTypeController::class, 'delete']);
-
    Route::get('/subjects', [SubjectController::class, 'get']);
-   Route::post('/subject', [SubjectController::class, 'create']);
-   Route::put('/subject/{id}', [SubjectController::class, 'update']);
-   Route::delete('/subject/{id}', [SubjectController::class, 'delete']);
-
    Route::get('/religions', [ReligionController::class, 'get']);
-   Route::post('/religion', [ReligionController::class, 'create']);
-   Route::put('/religion/{id}', [ReligionController::class, 'update']);
-   Route::delete('/religion/{id}', [ReligionController::class, 'delete']);
+
 
    Route::prefix('options')->group(function() {
       Route::get('/schools', [SchoolController::class, 'getOptions']);
