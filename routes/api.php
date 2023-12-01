@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::put('/data/{id}', [DataController::class, 'update'])->name('updateData');
    Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
    Route::post('/data/download', [DataController::class, 'downloadFile']);
-   Route::delete('/data', [DataController::class, 'delete']);
+   Route::delete('/data/{id}', [DataController::class, 'delete']);
 
    Route::get('/comments/{data_id}', [CommentController::class, 'get']);
    Route::post('/comment', [CommentController::class, 'create']);
@@ -54,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
    Route::post('/school', [SchoolController::class, 'create']);
    Route::put('/school/{id}', [SchoolController::class, 'update']);
-   Route::delete('/school', [SchoolController::class, 'delete']);
+   Route::delete('/school/{id}', [SchoolController::class, 'delete']);
 
    Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
    Route::post('/school-students', [SchoolStudentController::class, 'create']);
@@ -66,42 +66,42 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
    Route::post('/supervisor', [SupervisorController::class, 'create']);
    Route::put('/supervisor/{id}', [SupervisorController::class, 'update']);
-   Route::delete('/supervisor', [SupervisorController::class, 'delete']);
+   Route::delete('/supervisor/{id}', [SupervisorController::class, 'delete']);
 
    Route::get('/officers', [OfficerController::class, 'get']);
    Route::post('/officer', [OfficerController::class, 'create']);
    Route::put('/officer/{id}', [OfficerController::class, 'update']);
-   Route::delete('/officer', [OfficerController::class, 'delete']);
+   Route::delete('/officer/{id}', [OfficerController::class, 'delete']);
 
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
    Route::post('/data-status', [DataStatusController::class, 'create']);
    Route::put('/data-status/{id}', [DataStatusController::class, 'update']);
-   Route::delete('/data-status', [DataStatusController::class, 'delete']);
+   Route::delete('/data-status/{id}', [DataStatusController::class, 'delete']);
 
    Route::get('/data-categories', [DataCategoryController::class, 'get']);
    Route::post('/data-category', [DataCategoryController::class, 'create']);
    Route::put('/data-category/{id}', [DataCategoryController::class, 'update']);
-   Route::delete('/data-category', [DataCategoryController::class, 'delete']);
+   Route::delete('/data-category/{id}', [DataCategoryController::class, 'delete']);
 
    Route::get('/data-types', [DataTypeController::class, 'get']);
    Route::post('/data-type', [DataTypeController::class, 'create']);
    Route::put('/data-type/{id}', [DataTypeController::class, 'update']);
-   Route::delete('/data-type', [DataTypeController::class, 'delete']);
+   Route::delete('/data-type/{id}', [DataTypeController::class, 'delete']);
 
    Route::get('/school-types', [SchoolTypeController::class, 'get']);
    Route::post('/school-type', [SchoolTypeController::class, 'create']);
    Route::put('/school-type/{id}', [SchoolTypeController::class, 'update']);
-   Route::delete('/school-type', [SchoolTypeController::class, 'delete']);
+   Route::delete('/school-type/{id}', [SchoolTypeController::class, 'delete']);
 
    Route::get('/subjects', [SubjectController::class, 'get']);
    Route::post('/subject', [SubjectController::class, 'create']);
    Route::put('/subject/{id}', [SubjectController::class, 'update']);
-   Route::delete('/subject', [SubjectController::class, 'delete']);
+   Route::delete('/subject/{id}', [SubjectController::class, 'delete']);
 
    Route::get('/religions', [ReligionController::class, 'get']);
    Route::post('/religion', [ReligionController::class, 'create']);
    Route::put('/religion/{id}', [ReligionController::class, 'update']);
-   Route::delete('/religion', [ReligionController::class, 'delete']);
+   Route::delete('/religion/{id}', [ReligionController::class, 'delete']);
 
    Route::prefix('options')->group(function() {
       Route::get('/schools', [SchoolController::class, 'getOptions']);

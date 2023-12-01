@@ -11,13 +11,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SupervisorController extends Controller
 {
-   public function get(Request $request) {
+   public function get(Request $request)
+   {
       $supervisors = Supervisor::filter(request(['search']))->latest()->paginate($request->per_page)->withQueryString();
-
       return $this->apiResponse($supervisors);
    }
 
-   public function getDetails(Request $request, int $id) {
+   public function getDetails(Request $request, int $id)
+   {
       $supervisor = Supervisor::with(['schools' => function (HasMany $query) {
          $query->without('supervisor');
       }])->find($id);
@@ -25,7 +26,8 @@ class SupervisorController extends Controller
       return $this->apiResponse($supervisor);
    }
 
-   public function create(FormSupervisorRequest $request) {
+   public function create(FormSupervisorRequest $request)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_supervisor = $request->safe()->except(array_keys($_user));
 
@@ -42,7 +44,8 @@ class SupervisorController extends Controller
       return $this->apiResponse($user, 'Pengawas berhasil dibuat');
    }
 
-   public function update(FormSupervisorRequest $request, int $id) {
+   public function update(FormSupervisorRequest $request, int $id)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_supervisor = $request->safe()->except(array_keys($_user));
 
@@ -51,22 +54,15 @@ class SupervisorController extends Controller
       return $this->apiResponse(true, 'Pengawas berhasil diperbarui');
    }
 
-   public function delete(Request $request) {
-      $request->validate([
-         'id' => 'required'
-      ]);
-
-      $supervisor = Supervisor::find($request->id);
-
-      if (!$supervisor) return $this->apiResponse(null, 'Pengawas tidak ditemukan', 422);
-
-      $supervisor->delete();
-      User::where('userable_type', Supervisor::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
-
+   public function delete(int $id)
+   {
+      Supervisor::find($id)->delete();
+      User::where('userable_type', Supervisor::MORPH_ALIAS)->where('userable_id', $id)->delete();
       return $this->apiResponse(true, 'Pengawas berhasil dihapus');
    }
 
-   public function getOptions() {
+   public function getOptions()
+   {
       $supervisors = Supervisor::select('id')->distinct('id')->get();
       $data = [];
 

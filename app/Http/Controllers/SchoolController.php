@@ -10,18 +10,20 @@ use Illuminate\Support\Facades\Hash;
 
 class SchoolController extends Controller
 {
-   public function get(Request $request) {
+   public function get(Request $request)
+   {
       $schools = School::filter(request(['search', 'type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
-
       return $this->apiResponse($schools);
    }
 
-   public function getDetails(Request $request, int $id) {
+   public function getDetails(Request $request, int $id)
+   {
       $school = School::find($id);
       return $this->apiResponse($school);
    }
 
-   public function create(FormSchoolRequest $request) {
+   public function create(FormSchoolRequest $request)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_school = $request->safe()->except(array_keys($_user));
 
@@ -40,7 +42,8 @@ class SchoolController extends Controller
       return $this->apiResponse($user, 'Sekolah berhasil dibuat', 201);
    }
 
-   public function update(FormSchoolRequest $request, int $id) {
+   public function update(FormSchoolRequest $request, int $id)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_school = $request->safe()->except(array_keys($_user));
 
@@ -50,19 +53,15 @@ class SchoolController extends Controller
       return $this->apiResponse(true, 'Sekolah berhasil diperbarui');
    }
 
-   public function delete(Request $request) {
-      $request->validate([
-         'id' => 'required'
-      ]);
-
-      $school = School::find($request->id);
-      if (!$school) return $this->apiResponse(null, 'School not found', 422);
-      $school->delete();
-      User::where('userable_type', School::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
+   public function delete(int $id)
+   {
+      School::find($id)->delete();
+      User::where('userable_type', School::MORPH_ALIAS)->where('userable_id', $id)->delete();
       return $this->apiResponse(true, 'Sekolah berhasil dihapus');
    }
 
-   public function getOptions() {
+   public function getOptions()
+   {
       $schools = School::select('id')->get();
       $data = [];
 

@@ -13,43 +13,47 @@ use Illuminate\Support\Facades\Storage;
 
 class DataController extends Controller
 {
-   public function get(Request $request) {
+   public function get(Request $request)
+   {
       $data = Data::filter(request(['school', 'type', 'category', 'status', 'year']))->latest()->paginate($request->per_page)->withQueryString();
-
       return $this->apiResponse($data);
    }
 
-   public function getSingle(Request $request, int $id) {
+   public function getSingle(Request $request, int $id)
+   {
       $data = Data::find($id);
       return $this->apiResponse($data);
    }
 
-   public function create(FormDataRequest $request) {
+   public function create(FormDataRequest $request)
+   {
       $_data = $request->safe()->except(['file']);
       $_file = $request->validated('file');
 
       $extension = $_file->getClientOriginalExtension();
-      $path = $_file->storeAs('files', time().".$extension");
+      $path = $_file->storeAs('files', time() . ".$extension");
       $_data['path'] = Crypt::encryptString($path);
 
       $data = Data::create($_data);
       return $this->apiResponse($data, 'Data berhasil dibuat');
    }
 
-   public function update(FormDataRequest $request, int $id) {
+   public function update(FormDataRequest $request, int $id)
+   {
       $_data = $request->validated();
       Data::find($id)->update($_data);
       return $this->apiResponse(true, 'Data berhasil diperbarui');
    }
 
-   public function updateFile(FormDataRequest $request, int $id) {
+   public function updateFile(FormDataRequest $request, int $id)
+   {
       $_file = $request->validated('file');
       $data = Data::find($id);
       $oldPath = Crypt::decryptString($data->path);
       if (Storage::exists($oldPath)) Storage::delete($oldPath);
 
       $extension = $_file->getClientOriginalExtension();
-      $path = $_file->storeAs('files', time().".$extension");
+      $path = $_file->storeAs('files', time() . ".$extension");
 
       $data->update([
          'path' => Crypt::encryptString($path)
@@ -57,7 +61,8 @@ class DataController extends Controller
       return $this->apiResponse(true, 'File pada data berhasil diperbarui');
    }
 
-   public function downloadFile(Request $request) {
+   public function downloadFile(Request $request)
+   {
       $data = Data::find($request->id);
       if (!$data) return $this->apiResponse(null, 'Data tidak ditemukan', 422);
 
@@ -67,22 +72,19 @@ class DataController extends Controller
       return Storage::download($path);
    }
 
-   public function delete(Request $request) {
-      $request->validate([
-         'id' => 'required'
-      ]);
+   public function delete(int $id)
+   {
+      $data = Data::find($id);
 
-      $data = Data::find($request->id);
-      if (!$data) return $this->apiResponse(null, 'Data tidak ditemukan', 422);
-
-      $path = Crypt::decryptString($data->path);
-      if (Storage::exists($path)) Storage::delete($path);
+      $filePath = Crypt::decryptString($data->path);
+      if (Storage::exists($filePath)) Storage::delete($filePath);
 
       $data->delete();
       return $this->apiResponse(true, 'Data berhasil dihapus');
    }
 
-   public function count() {
+   public function count()
+   {
       $query = Data::all();
       $status = DataStatus::all();
       $category = DataCategory::all();

@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Hash;
 
 class OfficerController extends Controller
 {
-   public function get (Request $request) {
+   public function get(Request $request)
+   {
       $officers = Officer::filter(request(['search']))->latest()->paginate($request->per_page)->withQueryString();
-
       return $this->apiResponse($officers);
    }
 
-   public function create(FormSupervisorRequest $request) {
+   public function create(FormSupervisorRequest $request)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_officer = $request->safe()->except(array_keys($_user));
 
@@ -32,7 +33,8 @@ class OfficerController extends Controller
       return $this->apiResponse($user, 'Officer baru berhasil dibuat');
    }
 
-   public function update(Request $request, $id) {
+   public function update(Request $request, $id)
+   {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_officer = $request->safe()->except(array_keys($_user));
 
@@ -41,17 +43,10 @@ class OfficerController extends Controller
       return $this->apiResponse(true, 'Officer berhasil diperbarui');
    }
 
-   public function delete(Request $request) {
-      $request->validate([
-         'id' => 'required'
-      ]);
-
-      $officer = Officer::find($request->id);
-      if (!$officer) return $this->apiResponse(null, 'Officer tidak ditemukan', 422);
-
-      $officer->delete();
-      User::where('userable_type', Officer::MORPH_ALIAS)->where('userable_id', $request->id)->delete();
-
+   public function delete(int $id)
+   {
+      Officer::find($id)->delete();
+      User::where('userable_type', Officer::MORPH_ALIAS)->where('userable_id', $id)->delete();
       return $this->apiResponse(true, 'Officer berhasil dihapus');
    }
 }
