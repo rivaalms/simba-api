@@ -123,5 +123,6 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::get('/data-status', [DataStatusController::class, 'getOptions']);
       Route::get('/supervisors', [SupervisorController::class, 'getOptions']);
       Route::get('/school-types', [SchoolTypeController::class, 'getOptions']);
+      Route::get('/religions', [ReligionController::class, 'getOptions']);
    });
 });

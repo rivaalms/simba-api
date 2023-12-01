@@ -36,4 +36,10 @@ class ReligionController extends Controller
       Religion::find($id)->delete();
       return $this->apiResponse(true, 'Data agama berhasil dihapus');
    }
+
+   public function getOptions()
+   {
+      $religions = Religion::select('name as label', 'id as value')->get()->toArray();
+      return $this->apiResponse($religions);
+   }
 }
