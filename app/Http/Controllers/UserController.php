@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FormUserRequest;
-use App\Models\Comment;
-use App\Models\Officer;
 use Exception;
 use App\Models\User;
 use App\Models\School;
+use App\Models\Comment;
+use App\Models\Officer;
 use App\Models\Supervisor;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\FormUserRequest;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class UserController extends Controller
 {
@@ -114,6 +116,53 @@ class UserController extends Controller
       if (!Hash::check($_password, $currentUser->password)) return $this->apiResponse(null, 'Kata sandi salah', 422);
       $currentUser->update($_user);
       return $this->apiResponse(true, 'Pengguna berhasil diperbarui');
+   }
+
+   public function forgotPassword(Request $request)
+   {
+      $request->validate([
+         'email' => 'required|email|exists:users,email',
+      ]);
+
+      $status = Password::sendResetLink($request->only('email'));
+
+      if ($status === Password::RESET_LINK_SENT) {
+         return $this->apiResponse(true, 'Reset password link sent to your email');
+      } else {
+         return $this->apiResponse(false, 'Failed to send reset password link', 422);
+      }
+   }
+
+   public function resetPassword(Request $request)
+   {
+      $request->validate([
+         'token' => 'required',
+         'email' => 'required|email',
+         'password' => 'required|min:8|confirmed',
+      ]);
+
+      $status = Password::reset(
+         $request->only('email', 'password', 'password_confirmation', 'token'),
+         function (User $user, string $password) {
+            $user->forceFill([
+               'password' => Hash::make($password)
+            ]);
+
+            $user->save();
+
+            event(new PasswordReset($user));
+         }
+      );
+
+      $expectsJSON = $request->header('Accept') === 'application/json';
+
+      if ($status === Password::PASSWORD_RESET) {
+         if ($expectsJSON) return $this->apiResponse(true, 'Kata sandi berhasil diatur ulang');
+         return redirect('/');
+      }
+
+      if ($expectsJSON) return $this->apiResponse(false, 'Kata sandi gagal diatur ulang', 500);
+      dd('failed');
    }
 
    public function count()
