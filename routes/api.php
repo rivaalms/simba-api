@@ -97,6 +97,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
    });
 
+   Route::middleware('ability:officer')->group(function() {
+      Route::get('/officer/{id}', [OfficerController::class, 'getDetails']);
+   });
+
    Route::get('/data', [DataController::class, 'get']);
    Route::get('/data/{id}', [DataController::class, 'getSingle']);
    Route::post('/data/download', [DataController::class, 'downloadFile']);

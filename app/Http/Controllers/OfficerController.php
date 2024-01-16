@@ -16,6 +16,13 @@ class OfficerController extends Controller
       return $this->apiResponse($officers);
    }
 
+   public function getDetails(Request $request, int $id)
+   {
+      $officer = Officer::find($id);
+
+      return $this->apiResponse($officer);
+   }
+
    public function create(FormSupervisorRequest $request)
    {
       $_user = $request->safe()->only(User::USER_FIELDS);
