@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -22,6 +23,7 @@ class UserFactory extends Factory
          'name' => fake()->name(),
          'email' => fake()->unique()->safeEmail(),
          'password' => Hash::make('password'),
+         'profile_picture' => env('APP_URL') . "/profile-pictures/sample.png"
       ];
    }
 
