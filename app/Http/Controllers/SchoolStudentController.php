@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormSchoolStudentRequest;
+use App\Models\Religion;
 use App\Models\SchoolStudent;
 use Illuminate\Http\Request;
 
@@ -25,5 +26,36 @@ class SchoolStudentController extends Controller
       else SchoolStudent::create($_students);
 
       return $this->apiResponse(true, 'Data siswa berhasil ditambahkan');
+   }
+
+   public function getSchoolStudentsGrowth(Request $request, int $id) {
+      $startYear = $request->start_year;
+      $endYear = $request->end_year;
+
+      $years = array_map(
+         function ($i) {
+            return implode('-', [$i, $i + 1]);
+         },
+         range($startYear, $endYear)
+      );
+
+      rsort($years);
+
+      $students = SchoolStudent::where('school_id', $id)->whereBetween('year', [last($years), $years[0]])->orderBy('updated_at', 'desc')->get();
+
+      foreach ($years as $y) {
+         $count = $students->where('year', $y)->sum('count');
+         $data[$y] = $count;
+      }
+
+      $result = array_map(
+         function ($year, $total) {
+            return ['year' => $year, 'total' => $total];
+         },
+         array_keys($data),
+         $data
+      );
+
+      return $this->apiResponse($result);
    }
 }

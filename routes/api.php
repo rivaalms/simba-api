@@ -114,13 +114,15 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
    Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
 
+   Route::get('/school-students/{id}/growth', [SchoolStudentController::class, 'getSchoolStudentsGrowth']);
+   Route::get('/school-teachers/{id}/growth', [SchoolTeacherController::class, 'getSchoolTeachersGrowth']);
+
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
    Route::get('/data-categories', [DataCategoryController::class, 'get']);
    Route::get('/data-types', [DataTypeController::class, 'get']);
    Route::get('/school-types', [SchoolTypeController::class, 'get']);
    Route::get('/subjects', [SubjectController::class, 'get']);
    Route::get('/religions', [ReligionController::class, 'get']);
-
 
    Route::prefix('options')->group(function() {
       Route::get('/schools', [SchoolController::class, 'getOptions']);
