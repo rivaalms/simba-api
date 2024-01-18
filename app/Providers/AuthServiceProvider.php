@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
                break;
          }
 
-         return "{$endpoint}/reset-password?token={$token}";
+         return "{$endpoint}/reset-password?token={$token}&email={$user->email}";
       });
    }
 }
