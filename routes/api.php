@@ -42,6 +42,8 @@ Route::middleware('auth:sanctum')->group(function() {
 
       Route::get('/users', [UserController::class, 'get']);
       Route::get('/users/count', [UserController::class, 'count']);
+      Route::post('/user/{id}/activate', [UserController::class, 'activate']);
+      Route::post('/user/{id}/inactivate', [UserController::class, 'inactivate']);
 
       Route::post('/school', [SchoolController::class, 'create']);
       Route::put('/school/{id}', [SchoolController::class, 'update']);

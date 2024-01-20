@@ -18,6 +18,7 @@ return new class extends Migration
          $table->string('password');
          $table->nullableMorphs('userable');
          $table->string('profile_picture')->nullable();
+         $table->enum('status', array('ACTIVE', 'INACTIVE'))->default('ACTIVE');
          $table->timestamps();
       });
    }

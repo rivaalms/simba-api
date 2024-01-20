@@ -12,7 +12,7 @@ class School extends Model
 
    protected $guarded = ['id'];
    protected $with = [
-      'user:id,name,email,userable_type,userable_id',
+      'user:id,name,email,userable_type,userable_id,status,profile_picture',
       'type:id,name',
       'supervisor:id,employee_number',
       'supervisor.user:id,name,email,userable_type,userable_id'

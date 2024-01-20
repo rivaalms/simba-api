@@ -41,7 +41,12 @@ class User extends Authenticatable
       'password' => 'hashed',
    ];
 
-   public const USER_FIELDS = ['name', 'email', 'password', 'userable_type', 'userable_id'];
+   public const USER_FIELDS = ['name', 'email', 'password', 'userable_type', 'userable_id', 'status'];
+
+   public const USER_STATUS = [
+      'active' => 'ACTIVE',
+      'inactive' => 'INACTIVE'
+   ];
 
    public function userable() {
       return $this->morphTo();

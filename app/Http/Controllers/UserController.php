@@ -165,6 +165,26 @@ class UserController extends Controller
       dd('failed');
    }
 
+   public function activate(int $id)
+   {
+      $user = User::find($id);
+      if ($user->status === User::USER_STATUS['active']) return $this->apiResponse(false, 'Pengguna sudah aktif', 422);
+
+      $user->update(['status' => 'ACTIVE']);
+
+      return $this->apiResponse(true, 'Pengguna berhasil diaktifkan');
+   }
+
+   public function inactivate(int $id)
+   {
+      $user = User::find($id);
+      if ($user->status === User::USER_STATUS['inactive']) return $this->apiResponse(false, 'Pengguna sudah nonaktif', 422);
+
+      $user->update(['status' => 'INACTIVE']);
+
+      return $this->apiResponse(true, 'Pengguna berhasil dinonaktifkan');
+   }
+
    public function count()
    {
       $query = User::all();

@@ -33,7 +33,8 @@ class FormSchoolRequest extends FormRequest
             'school_type_id' => 'required|numeric',
             'supervisor_id' => 'required|numeric',
             'principal' => 'nullable|string',
-            'address' => 'nullable|string'
+            'address' => 'nullable|string',
+            'status' => 'required|string'
          ];
       } else {
          $school = School::find($this->route('id'));
@@ -43,7 +44,8 @@ class FormSchoolRequest extends FormRequest
             'school_type_id'  => 'required|numeric',
             'supervisor_id'   => 'required|numeric',
             'principal'       => 'nullable|string',
-            'address'         => 'nullable|string'
+            'address'         => 'nullable|string',
+            'status'          => 'required|string',
          ];
       }
       return $rules;
