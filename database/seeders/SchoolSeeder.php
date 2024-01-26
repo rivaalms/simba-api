@@ -15,8 +15,19 @@ class SchoolSeeder extends Seeder
 
    public function run(): void
    {
+      $customSchool = School::factory()->create([
+         'school_type_id' => 1
+      ]);
+
+      User::factory()->create([
+         'name' => 'SMPN 1 Sintang',
+         'email' => 'smpn1stg@example.com',
+         'userable_type' => self::MORPH_ALIAS,
+         'userable_id' => $customSchool->id
+      ]);
+
       School::factory(10)->create();
-      $school = School::select('id')->distinct('id')->get();
+      $school = School::select('id')->where('id', '!=', 1)->distinct('id')->get();
 
       foreach ($school as $s) {
          User::factory()->create([
