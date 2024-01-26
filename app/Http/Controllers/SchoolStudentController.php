@@ -39,9 +39,9 @@ class SchoolStudentController extends Controller
          range($startYear, $endYear)
       );
 
-      rsort($years);
+      sort($years);
 
-      $students = SchoolStudent::where('school_id', $id)->whereBetween('year', [last($years), $years[0]])->orderBy('updated_at', 'desc')->get();
+      $students = SchoolStudent::where('school_id', $id)->whereBetween('year', [$years[0], last($years)])->orderBy('updated_at', 'desc')->get();
 
       foreach ($years as $y) {
          $count = $students->where('year', $y)->sum('count');

@@ -38,9 +38,9 @@ class SchoolTeacherController extends Controller
          range($startYear, $endYear)
       );
 
-      rsort($years);
+      sort($years);
 
-      $teachers = SchoolTeacher::where('school_id', $id)->whereBetween('year', [last($years), $years[0]])->orderBy('updated_at', 'desc')->get();
+      $teachers = SchoolTeacher::where('school_id', $id)->whereBetween('year', [$years[0], last($years)])->orderBy('updated_at', 'desc')->get();
 
       foreach ($years as $y) {
          $count = $teachers->where('year', $y)->sum('count');
