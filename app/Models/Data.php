@@ -49,6 +49,24 @@ class Data extends Model
 
       $query->when($filters['status'] ?? false, fn (Builder $query, $status) => $query->where('data_status_id', $status));
 
-      $query->when($filters['year'] ?? false, fn (Builder $query, $year) => $query->where('year', 'like', "%{$year}%"));
+      $query->when($filters['year'] ?? false, function (Builder $query, $year) {
+         if (request()->start_year && request()->end_year) return;
+         $query->where('year', $year);
+      });
+   }
+
+   public function scopeYearRange(Builder $query, Array $years) {
+      if (request()->year) return;
+      if (!$years || count($years) < 2) return;
+
+      $_start_year = $years['start_year'];
+      $_end_year = $years['end_year'];
+
+      if ($_start_year && $_end_year) {
+         $startYear = implode('-', [$_start_year, $_start_year + 1]);
+         $endYear = implode('-', [$_end_year, $_end_year + 1]);
+
+         $query->whereBetween('year', [$startYear, $endYear]);
+      }
    }
 }

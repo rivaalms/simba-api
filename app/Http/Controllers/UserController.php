@@ -114,8 +114,27 @@ class UserController extends Controller
       $_password = $request->safe()->only('password')['password'];
 
       if (!Hash::check($_password, $currentUser->password)) return $this->apiResponse(null, 'Kata sandi salah', 422);
+
+      if ($currentUser->userable_type) {
+         $userableRequest = $request->except(['name', 'email', 'password', 'supervisor_id']);
+
+         switch ($currentUser->userable_type) {
+            case 'school':
+               School::find($currentUser->userable_id)->update($userableRequest);
+               break;
+            case 'supervisor':
+               Supervisor::find($currentUser->userable_id)->update($userableRequest);
+               break;
+            case 'officer':
+               Officer::find($currentUser->userable_id)->update($userableRequest);
+               break;
+            default:
+               break;
+         }
+      }
+
       $currentUser->update($_user);
-      return $this->apiResponse(true, 'Pengguna berhasil diperbarui');
+      return $this->apiResponse($currentUser->load(['userable']), 'Pengguna berhasil diperbarui');
    }
 
    public function forgotPassword(Request $request)

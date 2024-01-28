@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FormSchoolStudentRequest;
 use App\Models\Religion;
 use App\Models\SchoolStudent;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SchoolStudentController extends Controller
@@ -57,5 +58,17 @@ class SchoolStudentController extends Controller
       );
 
       return $this->apiResponse($result);
+   }
+
+   public function countStudents(Request $request)
+   {
+      $user = request()->user();
+      $year = $request->year;
+
+      $data = SchoolStudent::where('school_id', $user->userable_id)->where('year', $year)->get();
+
+      $count = $data->map(fn ($item) => $item['count'])->reduce(fn ($sum, $current) => $sum + $current);
+
+      return $this->apiResponse($count);
    }
 }

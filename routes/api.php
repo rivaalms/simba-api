@@ -38,7 +38,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::middleware('ability:admin')->group(function () {
       Route::delete('/data/{id}', [DataController::class, 'delete']);
       Route::put('/comment/{id}', [CommentController::class, 'update']);
-      Route::get('/data/count', [DataController::class, 'count']);
 
       Route::get('/users', [UserController::class, 'get']);
       Route::get('/users/count', [UserController::class, 'count']);
@@ -87,7 +86,9 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/data', [DataController::class, 'create'])->name('createData');
       Route::put('/data/{id}', [DataController::class, 'update'])->name('updateData');
       Route::post('/school-students', [SchoolStudentController::class, 'create']);
+      Route::get('/school-students/count', [SchoolStudentController::class, 'countStudents']);
       Route::post('/school-teachers', [SchoolTeacherController::class, 'create']);
+      Route::get('/school-teachers/count', [SchoolTeacherController::class, 'countTeachers']);
       Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
    });
 
@@ -104,8 +105,9 @@ Route::middleware('auth:sanctum')->group(function() {
    });
 
    Route::get('/data', [DataController::class, 'get']);
-   Route::get('/data/{id}', [DataController::class, 'getSingle']);
+   Route::get('/data/{id}', [DataController::class, 'getSingle'])->whereNumber('id');
    Route::post('/data/download', [DataController::class, 'downloadFile']);
+   Route::get('/data/count', [DataController::class, 'count']);
 
    Route::get('/comments/{data_id}', [CommentController::class, 'get']);
    Route::post('/comment', [CommentController::class, 'create']);
@@ -116,8 +118,8 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/school-students', [SchoolStudentController::class, 'getSchoolStudents']);
    Route::get('/school-teachers', [SchoolTeacherController::class, 'getSchoolTeachers']);
 
-   Route::get('/school-students/{id}/growth', [SchoolStudentController::class, 'getSchoolStudentsGrowth']);
-   Route::get('/school-teachers/{id}/growth', [SchoolTeacherController::class, 'getSchoolTeachersGrowth']);
+   Route::get('/school-students/{id}/growth', [SchoolStudentController::class, 'getSchoolStudentsGrowth'])->whereNumber('id');
+   Route::get('/school-teachers/{id}/growth', [SchoolTeacherController::class, 'getSchoolTeachersGrowth'])->whereNumber('id');
 
    Route::get('/data-statuses', [DataStatusController::class, 'get']);
    Route::get('/data-categories', [DataCategoryController::class, 'get']);

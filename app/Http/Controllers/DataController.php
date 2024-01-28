@@ -86,10 +86,23 @@ class DataController extends Controller
 
    public function count()
    {
-      $query = Data::all();
+      $user = request()->user();
+      $isAdmin = !$user->userable_type;
+
+      $query = Data::filter(request(['year']))->yearRange(request(['start_year', 'end_year']))->get();
       $status = DataStatus::all();
       $category = DataCategory::all();
       $type = DataType::all();
+
+      if (!$isAdmin) {
+         switch ($user->userable_type) {
+            case 'school':
+               $query = $query->where('school_id', $user->userable_id);
+               break;
+            default:
+               break;
+         }
+      }
 
       $total = $query->count();
 
@@ -121,6 +134,6 @@ class DataController extends Controller
          ));
       }
 
-      return $this->apiResponse(compact('total', 'data_by_status', 'data_by_category'));
+      return $this->apiResponse(array_merge(compact('total', 'data_by_status', 'data_by_category'), request(['start_year', 'end_year'])));
    }
 }

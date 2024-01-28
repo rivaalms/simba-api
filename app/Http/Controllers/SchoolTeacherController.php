@@ -57,4 +57,16 @@ class SchoolTeacherController extends Controller
 
       return $this->apiResponse($result);
    }
+
+   public function countTeachers(Request $request)
+   {
+      $user = request()->user();
+      $year = $request->year;
+
+      $data = SchoolTeacher::where('school_id', $user->userable_id)->where('year', $year)->get();
+
+      $count = $data->map(fn ($item) => $item['count'])->reduce(fn ($sum, $current) => $sum + $current);
+
+      return $this->apiResponse($count);
+   }
 }
