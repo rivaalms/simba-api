@@ -31,10 +31,16 @@ class UserController extends Controller
          $user = User::where('email', $request->email)->firstOrFail();
          if (!Hash::check($request->password, $user->password)) throw new Exception();
 
+         $requestOrigin = $request->header('Origin');
+
          if ($user->userable_type) {
+            $envPointer = strtoupper($user->userable_type);
+            if ($requestOrigin !== env("CLIENT_{$envPointer}_URL")) return $this->apiResponse(null, 'Akses ditolak', 403);
+
             $user->load('userable');
             $tokenAbility = $user->userable_type;
          } else {
+            if ($requestOrigin !== env('CLIENT_ADMIN_URL')) return $this->apiResponse(null, 'Akses ditolak', 403);
             $tokenAbility = '*';
          }
 
