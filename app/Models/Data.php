@@ -53,6 +53,13 @@ class Data extends Model
          if (request()->start_year && request()->end_year) return;
          $query->where('year', $year);
       });
+
+      $query->when($filters['supervisor'] ?? false, function (Builder $query, $supervisor) {
+         if (request()->school) return;
+         $query->whereHas('school', function ($query) use ($supervisor) {
+            $query->where('supervisor_id', $supervisor);
+         });
+      });
    }
 
    public function scopeYearRange(Builder $query, Array $years) {
