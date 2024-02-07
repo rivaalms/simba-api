@@ -62,7 +62,7 @@ class SchoolController extends Controller
 
    public function getOptions()
    {
-      $schools = School::select('id')->get();
+      $schools = School::select('id')->filter(request(['supervisor']))->get();
       $data = [];
 
       foreach ($schools as $s) {
