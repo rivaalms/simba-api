@@ -14,7 +14,7 @@ class Data extends Model
 
    protected $with = [
       'school:id,supervisor_id',
-      'school.user:id,name,email,userable_type,userable_id',
+      'school.user:id,name,email,userable_type,userable_id,profile_picture,status',
       'status:id,name',
       'type:id,name,data_category_id',
       'type.category:id,name'
