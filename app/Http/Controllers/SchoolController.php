@@ -12,7 +12,7 @@ class SchoolController extends Controller
 {
    public function get(Request $request)
    {
-      $schools = School::filter(request(['search', 'type', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
+      $schools = School::search($request->search)->type($request->type)->supervisor($request->supervisor)->latest()->paginate($request->per_page)->withQueryString();
       return $this->apiResponse($schools);
    }
 
@@ -62,7 +62,7 @@ class SchoolController extends Controller
 
    public function getOptions()
    {
-      $schools = School::select('id')->filter(request(['supervisor']))->get();
+      $schools = School::select('id')->supervisor(request('supervisor'))->get();
       $data = [];
 
       foreach ($schools as $s) {

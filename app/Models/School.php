@@ -44,14 +44,18 @@ class School extends Model
       return $this->hasMany(SchoolTeacher::class);
    }
 
-   public function scopeFilter(Builder $query, Array $filters) {
-      $query->when($filters['search'] ?? false, fn (Builder $query, $search) => $query->whereHas('user', function (Builder $query) use ($search) {
+   public function scopeType(Builder $query, int|null $type) {
+      $query->when($type ?? false, fn (Builder $query, $type) => $query->where('school_type_id', $type));
+   }
+
+   public function scopeSearch(Builder $query, string|null $search) {
+      $query->when($search ?? false, fn (Builder $query, $search) => $query->whereHas('user', function (Builder $query) use ($search) {
          return $query->where('name', 'like', "%$search%")
             ->orWhere('email', 'like', "%$search%");
       })->orWhere('principal', 'like', "%$search%"));
+   }
 
-      $query->when($filters['type'] ?? false, fn (Builder $query, $type) => $query->where('school_type_id', $type));
-
-      $query->when($filters['supervisor'] ?? false, fn (Builder $query, $supervisor) => $query->where('supervisor_id', $supervisor));
+   public function scopeSupervisor(Builder $query, int|null $supervisor) {
+      $query->when($supervisor ?? false, fn (Builder $query, $supervisor) => $query->where('supervisor_id', $supervisor));
    }
 }
