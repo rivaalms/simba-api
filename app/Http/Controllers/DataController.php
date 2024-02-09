@@ -180,7 +180,7 @@ class DataController extends Controller
 
             $data_by_status[] = [
                'name' => $s->name,
-               'count' => $sData->count
+               'count' => $sData?->count ?: 0
             ];
          }
 
