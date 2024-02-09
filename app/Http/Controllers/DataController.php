@@ -136,4 +136,14 @@ class DataController extends Controller
 
       return $this->apiResponse(array_merge(compact('total', 'data_by_status', 'data_by_category'), request(['start_year', 'end_year'])));
    }
+
+   public function updateDataStatus(Request $request, int $id)
+   {
+      $data = $request->validate([
+         'data_status_id' => 'required'
+      ]);
+
+      Data::where('id', $id)->update($data);
+      return $this->apiResponse(true, 'Status data berhasil diperbarui');
+   }
 }

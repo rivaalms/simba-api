@@ -92,6 +92,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/data/file/{id}', [DataController::class, 'updateFile'])->name('updateFile');
    });
 
+   Route::middleware('ability:supervisor')->group(function() {
+      Route::put('/data/{id}/update-status', [DataController::class, 'updateDataStatus']);
+   });
+
    Route::middleware('ability:supervisor,officer')->group(function () {
       Route::get('/schools', [SchoolController::class, 'get']);
       Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
