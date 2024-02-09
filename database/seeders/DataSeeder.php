@@ -14,7 +14,7 @@ class DataSeeder extends Seeder
     */
    public function run(): void
    {
-      Data::factory()->count(100)->create();
+      Data::factory()->count(20000)->create();
       Comment::factory(50)->create();
    }
 }

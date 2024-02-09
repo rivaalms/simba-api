@@ -13,9 +13,16 @@ class SupervisorSeeder extends Seeder
 
    public function run(): void
    {
-      Supervisor::factory(10)->create();
+      $custom = Supervisor::factory()->create();
+      User::factory()->create([
+         'name' => 'Riva Almero',
+         'email' => 'riva@example.com',
+         'userable_type' => self::MORPH_ALIAS,
+         'userable_id' => $custom->id
+      ]);
 
-      $supervisor = Supervisor::select('id')->get();
+      Supervisor::factory(10)->create();
+      $supervisor = Supervisor::select('id')->where('id', '!=', $custom->id)->distinct()->get();
 
       foreach ($supervisor as $s) {
          User::factory()->create([

@@ -27,7 +27,7 @@ class SchoolSeeder extends Seeder
       ]);
 
       School::factory(10)->create();
-      $school = School::select('id')->where('id', '!=', 1)->distinct('id')->get();
+      $school = School::select('id')->where('id', '!=', $customSchool->id)->distinct('id')->get();
 
       foreach ($school as $s) {
          User::factory()->create([
