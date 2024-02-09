@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FormSchoolRequest;
 use App\Models\User;
 use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\FormSchoolRequest;
 
 class SchoolController extends Controller
 {
@@ -72,5 +72,28 @@ class SchoolController extends Controller
          ]);
       }
       return $this->apiResponse($data);
+   }
+
+   public function countSchools(Request $request)
+   {
+      $user = $request->user();
+      $query = School::select('school_type_id');
+      $byTypeQuery = School::without(['user', 'type', 'supervisor'])->selectRaw('count(schools.id) as count, school_types.name as type')->join('school_types', 'schools.school_type_id', '=', 'school_types.id');
+
+
+      if ($user->userable_type == 'supervisor') {
+         $query = $query->where('supervisor_id', $user->userable_id);
+         $byTypeQuery = $byTypeQuery->where('supervisor_id', $user->userable_id);
+      }
+
+      $count = $query->count();
+      $countByType = $byTypeQuery->groupBy('school_types.name')->get();
+
+      $result = array(
+         'total' => $count,
+         'by_type' => $countByType
+      );
+
+      return $this->apiResponse($result);
    }
 }

@@ -99,6 +99,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::middleware('ability:supervisor,officer')->group(function () {
       Route::get('/schools', [SchoolController::class, 'get']);
       Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
+      Route::get('/schools/count', [SchoolController::class, 'countSchools']);
 
       Route::get('/supervisors',  [SupervisorController::class, 'get']);
       Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
