@@ -16,7 +16,7 @@ class DataController extends Controller
 {
    public function get(Request $request)
    {
-      $data = Data::filter(request(['school', 'type', 'category', 'status', 'year', 'supervisor']))->latest()->paginate($request->per_page)->withQueryString();
+      $data = Data::filter(request(['school', 'type', 'category', 'status', 'year', 'supervisor']))->latest('updated_at')->paginate($request->per_page)->withQueryString();
       return $this->apiResponse($data);
    }
 
