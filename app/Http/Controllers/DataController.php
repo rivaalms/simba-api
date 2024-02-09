@@ -108,6 +108,8 @@ class DataController extends Controller
                $total = $totalQuery->count();
                break;
          }
+      } else {
+         $total = $totalQuery->count();
       }
 
       $data = Data::without(['type', 'status', 'school'])->filter(request(['year']))->yearRange(request(['start_year', 'end_year']))
