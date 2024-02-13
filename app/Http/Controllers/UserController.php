@@ -28,9 +28,9 @@ class UserController extends Controller
       if ($validator->fails()) return $this->apiResponse(null, 'Format kredensial tidak sesuai', 422);
 
       try {
-         $user = User::where('email', $request->email)->firstOr(
-            throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401)
-         );
+         $user = User::where('email', $request->email)->firstOr(function() {
+            return throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401);
+         });
 
          if (!Hash::check($request->password, $user->password)) {
             throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401);
