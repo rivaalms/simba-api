@@ -28,19 +28,31 @@ class UserController extends Controller
       if ($validator->fails()) return $this->apiResponse(null, 'Format kredensial tidak sesuai', 422);
 
       try {
-         $user = User::where('email', $request->email)->firstOrFail();
-         if (!Hash::check($request->password, $user->password)) throw new Exception();
+         $user = User::where('email', $request->email)->firstOr(
+            throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401)
+         );
+
+         if (!Hash::check($request->password, $user->password)) {
+            throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401);
+         }
 
          $requestOrigin = $request->header('Origin');
 
          if ($user->userable_type) {
             $envPointer = strtoupper($user->userable_type);
-            if ($requestOrigin !== env("CLIENT_{$envPointer}_URL")) return $this->apiResponse(null, 'Akses ditolak', 403);
+            $allowedUrl = env("CLIENT_{$envPointer}_URL");
+         } else {
+            $allowedUrl = env("CLIENT_ADMIN_URL");
+         }
 
+         if ($requestOrigin !== $allowedUrl) {
+            throw new Exception('Akses ditolak', 403);
+         }
+
+         if ($user->userable_type) {
             $user->load('userable');
             $tokenAbility = $user->userable_type;
          } else {
-            if ($requestOrigin !== env('CLIENT_ADMIN_URL')) return $this->apiResponse(null, 'Akses ditolak', 403);
             $tokenAbility = '*';
          }
 
@@ -48,7 +60,7 @@ class UserController extends Controller
 
          $data = compact('user', 'token');
       } catch (Exception $e) {
-         return $this->apiResponse(null, 'Kredensial Anda tidak sesuai dengan arsip kami', 401);
+         return $this->apiResponse(null, $e->getMessage(), $e->getCode());
       }
 
       return $this->apiResponse($data, 'Login berhasil');
