@@ -29,7 +29,7 @@ class UserController extends Controller
 
       try {
          $user = User::where('email', $request->email)->firstOr(function() {
-            return throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401);
+            throw new Exception('Kredensial Anda tidak sesuai dengan arsip kami', 401);
          });
 
          if (!Hash::check($request->password, $user->password)) {
