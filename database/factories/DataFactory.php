@@ -20,7 +20,7 @@ class DataFactory extends Factory
    {
       return [
          'data_type_id' => mt_rand(1, 34),
-         'school_id' => mt_rand(1, 2),
+         'school_id' => mt_rand(1, 11),
          'path' => Crypt::encryptString(time() . '.' . fake()->fileExtension()),
          'year' => self::generateYear(self::YEARS, fake()->randomDigit()),
          'data_status_id' => mt_rand(1, 4)
