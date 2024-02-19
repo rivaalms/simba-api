@@ -21,12 +21,22 @@ class CommentController extends Controller
    public function create(FormCommentRequest $request)
    {
       $comment = Comment::create($request->validated());
+      $comment->data->updated_at = $comment->created_at;
+      $comment->data->save();
       return $this->apiResponse($comment, 'Komentar berhasil dibuat');
    }
 
    public function update(FormCommentRequest $request, int $id)
    {
-      Comment::find($id)->update($request->validated());
+      $comment = Comment::find($id);
+      foreach ($request->validated() as $k => $r) {
+         $comment->$k = $r;
+      }
+
+      $comment->save();
+      $comment->data->updated_at = $comment->updated_at;
+      $comment->data->save();
+
       return $this->apiResponse(true, 'Komentar berhasil diperbarui');
    }
 
@@ -38,6 +48,9 @@ class CommentController extends Controller
             Comment::find($r->id)->delete();
          }
       }
+
+      $comment->data->updated_at = \Carbon\Carbon::now();
+      $comment->data->save();
 
       $comment->delete();
       return $this->apiResponse(true, 'Komentar berhasil dihapus');
