@@ -36,30 +36,37 @@ class Data extends Model
       return $this->hasMany(Comment::class);
    }
 
-   public function scopeFilter(Builder $query, Array $filters) {
-      $query->when($filters['school'] ?? false, fn (Builder $query, $school) => $query->where('school_id', $school));
+   public function scopeFilterSchool(Builder $query, $school) {
+      $query->when($school ?? false, fn (Builder $query, $school) => $query->where('school_id', $school));
+   }
 
-      $query->when($filters['category'] ?? false, fn (Builder $query, $category) =>
-         $query->whereHas('type', fn ($query) =>
+   public function scopeCategory(Builder $query, $category) {
+      $query->when($category ?? false, fn (Builder $query, $category) =>
+         $query->whereHas('type', fn (Builder $query) =>
             $query->where('data_category_id', $category)
          )
       );
+   }
 
-      $query->when($filters['type'] ?? false, fn (Builder $query, $type) => $query->where('data_type_id', $type));
+   public function scopeType(Builder $query, $type) {
+      $query->when($type ?? false, fn (Builder $query, $type) => $query->where('data_type_id', $type));
+   }
 
-      $query->when($filters['status'] ?? false, fn (Builder $query, $status) => $query->where('data_status_id', $status));
+   public function scopeStatus(Builder $query, $status) {
+      $query->when($status ?? false, fn (Builder $query, $status) => $query->where('data_status_id', $status));
+   }
 
-      $query->when($filters['year'] ?? false, function (Builder $query, $year) {
+   public function scopeYear(Builder $query, $year) {
+      $query->when($year ?? false, function (Builder $query, $year) {
          if (request()->start_year && request()->end_year) return;
          $query->where('year', $year);
       });
+   }
 
-      $query->when($filters['supervisor'] ?? false, function (Builder $query, $supervisor) {
-         if (request()->school) return;
-         $query->whereHas('school', function ($query) use ($supervisor) {
-            $query->where('supervisor_id', $supervisor);
-         });
-      });
+   public function scopeSchoolSupervisor(Builder $query, $supervisor) {
+      $query->when($supervisor ?? false, fn (Builder $query, $supervisor) => $query->whereHas('school', function (Builder $query) use ($supervisor) {
+         $query->where('supervisor_id', $supervisor);
+      }));
    }
 
    public function scopeYearRange(Builder $query, Array $years) {

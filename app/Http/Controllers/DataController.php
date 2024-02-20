@@ -16,18 +16,50 @@ class DataController extends Controller
 {
    public function get(Request $request)
    {
-      $data = Data::filter(request(['school', 'type', 'category', 'status', 'year', 'supervisor']))->latest('updated_at')->paginate($request->per_page)->withQueryString();
+      $user = $request->user();
+      $req = $request->all();
+
+      if ($user->userable_type == 'school' || $user->userable_type == 'supervisor') {
+         $req[$user->userable_type] = $user->userable_id;
+      }
+
+      $query = Data::latest('updated_at')
+         ->category($req['category'] ?? null)
+         ->type($req['type'] ?? null)
+         ->status($req['status'] ?? null)
+         ->year($req['year'] ?? null)
+         ->filterSchool($req['school'] ?? null)
+         ->schoolSupervisor($req['supervisor'] ?? null);
+
+      $data = $query->paginate($request->per_page)->withQueryString();
+
       return $this->apiResponse($data);
    }
 
    public function getSingle(Request $request, int $id)
    {
+      $user = $request->user();
       $data = Data::find($id);
+
+      if ($user->userable_type == 'school' && $data->school_id !== $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
+      if ($user->userable_type == 'supervisor' && $data->school->supervisor_id !== $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       return $this->apiResponse($data);
    }
 
    public function create(FormDataRequest $request)
    {
+      $user = $request->user();
+
+      if ($user->userable_type == 'school' && $request->school_id !== $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       $_data = $request->safe()->except(['file']);
       $_file = $request->validated('file');
 
@@ -41,15 +73,34 @@ class DataController extends Controller
 
    public function update(FormDataRequest $request, int $id)
    {
+      $user = $request->user();
       $_data = $request->validated();
-      Data::find($id)->update($_data);
+      $data = Data::find($id);
+
+      if ($user->userable_type == 'school') {
+         if (
+            $data->school_id != $user->userable_id
+            || $_data['school_id'] !== $user->userable_id
+            || $_data['school_id'] !== $data->school_id
+         ) {
+            return $this->apiResponse(null, 'Aksi dilarang', 403);
+         }
+      }
+
+      $data->update($_data);
       return $this->apiResponse(true, 'Data berhasil diperbarui');
    }
 
    public function updateFile(FormDataRequest $request, int $id)
    {
-      $_file = $request->validated('file');
+      $user = $request->user();
       $data = Data::find($id);
+
+      if ($user->userable_type == 'school' && $data->school_id !== $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
+      $_file = $request->validated('file');
       $oldPath = Crypt::decryptString($data->path);
       if (Storage::exists($oldPath)) Storage::delete($oldPath);
 
@@ -59,6 +110,7 @@ class DataController extends Controller
       $data->update([
          'path' => Crypt::encryptString($path)
       ]);
+
       return $this->apiResponse(true, 'File pada data berhasil diperbarui');
    }
 
@@ -84,7 +136,7 @@ class DataController extends Controller
       return $this->apiResponse(true, 'Data berhasil dihapus');
    }
 
-   public function count()
+   public function count(Request $request)
    {
       $user = request()->user();
       $isAdmin = !$user->userable_type;
@@ -93,7 +145,7 @@ class DataController extends Controller
       $allTypes = DataType::without(['category'])->get();
       $allStatuses = DataStatus::all();
 
-      $totalQuery = Data::filter(request(['year']))->yearRange(request(['start_year', 'end_year']));
+      $totalQuery = Data::year($request->year)->yearRange(request(['start_year', 'end_year']));
 
       if (!$isAdmin) {
          switch ($user->userable_type) {
@@ -112,7 +164,7 @@ class DataController extends Controller
          $total = $totalQuery->count();
       }
 
-      $data = Data::without(['type', 'status', 'school'])->filter(request(['year']))->yearRange(request(['start_year', 'end_year']))
+      $data = Data::without(['type', 'status', 'school'])->year($request->year)->yearRange(request(['start_year', 'end_year']))
          ->when(!$isAdmin, function ($query) use ($user) {
             switch ($user->userable_type) {
                case 'school':
@@ -157,7 +209,7 @@ class DataController extends Controller
          ];
       }
 
-      $byStatus = Data::without(['type', 'status', 'school'])->filter(request(['year']))->yearRange(request(['start_year', 'end_year']))
+      $byStatus = Data::without(['type', 'status', 'school'])->year($request->year)->yearRange(request(['start_year', 'end_year']))
          ->when(!$isAdmin, function ($query) use ($user) {
             switch ($user->userable_type) {
                case 'school':

@@ -16,6 +16,15 @@ class FormDataRequest extends FormRequest
       return false;
    }
 
+   protected function prepareForValidation(): void
+   {
+      if ($this->user()->userable_type == 'school') {
+         $this->merge([
+            'school_id' => $this->user()->userable_id
+         ]);
+      }
+   }
+
    /**
     * Get the validation rules that apply to the request.
     *
