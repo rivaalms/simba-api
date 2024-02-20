@@ -11,9 +11,23 @@ class FormSchoolStudentRequest extends FormRequest
     */
    public function authorize(): bool
    {
-      $userable = $this->user()->userable_type;
-      if ($userable === 'school' || $userable === null) return true;
+      $user = $this->user();
+      if ($user->userable_type == null) return true;
+
+      if ($user->userable_type == 'school') {
+         if ($this->school_id && $this->school_id != $user->userable_id) return false;
+         return true;
+      }
+
       return false;
+   }
+
+   public function prepareForValidation(): void
+   {
+      $user = $this->user();
+      if ($user->userable_type == 'school') {
+         $this->merge(['school_id' => $user->userable_id]);
+      }
    }
 
    /**

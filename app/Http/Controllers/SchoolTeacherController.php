@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\School;
 use Illuminate\Http\Request;
 use App\Models\SchoolTeacher;
 use App\Http\Requests\FormSchoolTeacherRequest;
@@ -10,6 +11,19 @@ use App\Http\Requests\FormSchoolTeacherRequest;
 class SchoolTeacherController extends Controller
 {
    public function getSchoolTeachers (Request $request) {
+      $user = $request->user();
+
+      if ($user->userable_type == 'school' && $request->school_id != $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
+      if ($user->userable_type == 'supervisor') {
+         $school = School::select('id', 'supervisor_id')->where('id', $request->school_id)->first();
+         if ($school->supervisor_id != $user->userable_id) {
+            return $this->apiResponse(null, 'Aksi dilarang', 403);
+         }
+      }
+
       $teachers = SchoolTeacher::where('school_id', $request->school_id)->filter(request(['year']))->orderBy('updated_at', 'desc')->get();
       return $this->apiResponse($teachers);
    }

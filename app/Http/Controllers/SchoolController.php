@@ -12,13 +12,32 @@ class SchoolController extends Controller
 {
    public function get(Request $request)
    {
-      $schools = School::search($request->search)->type($request->type)->supervisor($request->supervisor)->latest()->paginate($request->per_page)->withQueryString();
+      $user = $request->user();
+      $req = $request->all();
+
+      if ($user->userable_type == 'supervisor') {
+         $req['supervisor'] = $user->userable_id;
+      }
+
+      $schools = School::search($request->search)
+         ->latest()
+         ->type($req['type'] ?? null)
+         ->supervisor($req['supervisor'] ?? null)
+         ->paginate($request->per_page)
+         ->withQueryString();
+
       return $this->apiResponse($schools);
    }
 
    public function getDetails(Request $request, int $id)
    {
+      $user = $request->user();
       $school = School::find($id);
+
+      if ($user->userable_type == 'supervisor' && $school->supervisor_id !== $user->userable_id ) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       return $this->apiResponse($school);
    }
 

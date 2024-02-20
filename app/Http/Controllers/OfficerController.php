@@ -18,6 +18,11 @@ class OfficerController extends Controller
 
    public function getDetails(Request $request, int $id)
    {
+      $user = $request->user();
+      if ($user->userable_type == 'officer' && $id != $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       $officer = Officer::find($id);
 
       return $this->apiResponse($officer);

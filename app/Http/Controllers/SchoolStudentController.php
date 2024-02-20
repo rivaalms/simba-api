@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FormSchoolStudentRequest;
 use App\Models\Religion;
+use App\Models\School;
 use App\Models\SchoolStudent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -11,6 +12,19 @@ use Illuminate\Http\Request;
 class SchoolStudentController extends Controller
 {
    public function getSchoolStudents (Request $request) {
+      $user = $request->user();
+
+      if ($user->userable_type == 'school' && $request->school_id != $user->userable_id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
+      if ($user->userable_type == 'supervisor') {
+         $school = School::select('id', 'supervisor_id')->where('id', $request->school_id)->first();
+         if ($school->supervisor_id != $user->userable_id) {
+            return $this->apiResponse(null, 'Aksi dilarang', 403);
+         }
+      }
+
       $students = SchoolStudent::where('school_id', $request->school_id)->filter(request(['year']))->orderBy('updated_at', 'desc')->get();
       return $this->apiResponse($students);
    }

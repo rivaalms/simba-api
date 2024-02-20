@@ -14,6 +14,16 @@ class FormCommentRequest extends FormRequest
       return true;
    }
 
+   public function prepareForValidation(): void
+   {
+      $user = $this->user();
+      if ($user->userable_type != null) {
+         $this->merge([
+            'user_id' => $user->id
+         ]);
+      }
+   }
+
    /**
     * Get the validation rules that apply to the request.
     *

@@ -19,6 +19,11 @@ class SupervisorController extends Controller
 
    public function getDetails(Request $request, int $id)
    {
+      $user = $request->user();
+      if ($user->userable_type == 'supervisor' && $id != $user->userable_type) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       $supervisor = Supervisor::with(['schools' => function (HasMany $query) {
          $query->without('supervisor');
       }])->find($id);

@@ -28,12 +28,14 @@ class CommentController extends Controller
 
    public function update(FormCommentRequest $request, int $id)
    {
+      $user = $request->user();
       $comment = Comment::find($id);
-      foreach ($request->validated() as $k => $r) {
-         $comment->$k = $r;
+
+      if ($user->userable_type != null && $comment->user_id != $user->id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
       }
 
-      $comment->save();
+      $comment->update($request->validated());
       $comment->data->updated_at = $comment->updated_at;
       $comment->data->save();
 
@@ -42,7 +44,13 @@ class CommentController extends Controller
 
    public function delete(int $id)
    {
+      $user = request()->user();
       $comment = Comment::find($id);
+
+      if ($user->userable_type != null && $comment->user_id != $user->id) {
+         return $this->apiResponse(null, 'Aksi dilarang', 403);
+      }
+
       if (!!count($comment->replies)) {
          foreach ($comment->replies as $r) {
             Comment::find($r->id)->delete();

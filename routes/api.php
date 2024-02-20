@@ -37,7 +37,6 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::middleware('ability:admin')->group(function () {
       Route::delete('/data/{id}', [DataController::class, 'delete']);
-      Route::put('/comment/{id}', [CommentController::class, 'update']);
 
       Route::get('/users', [UserController::class, 'get']);
       Route::get('/users/count', [UserController::class, 'count']);
@@ -101,11 +100,11 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::get('/school/{id}', [SchoolController::class, 'getDetails']);
       Route::get('/schools/count', [SchoolController::class, 'countSchools']);
 
-      Route::get('/supervisors',  [SupervisorController::class, 'get']);
       Route::get('/supervisor/{id}', [SupervisorController::class, 'getDetails']);
    });
 
    Route::middleware('ability:officer')->group(function() {
+      Route::get('/supervisors', [SupervisorController::class, 'get']);
       Route::get('/officer/{id}', [OfficerController::class, 'getDetails']);
    });
 
@@ -116,6 +115,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::get('/comments/{data_id}', [CommentController::class, 'get']);
    Route::post('/comment', [CommentController::class, 'create']);
+   Route::put('/comment/{id}', [CommentController::class, 'update']);
    Route::delete('/comment/{id}', [CommentController::class, 'delete']);
 
    Route::put('/user/{id}', [UserController::class, 'update']);
@@ -135,7 +135,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::prefix('options')->group(function() {
       Route::get('/schools', [SchoolController::class, 'getOptions']);
-      Route::get('/data-categories', [DataCategoryController::class, 'getOPtions']);
+      Route::get('/data-categories', [DataCategoryController::class, 'getOptions']);
       Route::get('/data-types', [DataTypeController::class, 'getOptions']);
       Route::get('/data-status', [DataStatusController::class, 'getOptions']);
       Route::get('/supervisors', [SupervisorController::class, 'getOptions']);
