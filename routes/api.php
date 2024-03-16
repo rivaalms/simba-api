@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
 use App\Http\Controllers\UserC;
-use Illuminate\Http\Request;
+use App\Http\Controllers\CommentC;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthC::class, 'login']);
@@ -45,6 +46,11 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data/{id}', [DataC::class, 'show'])->whereNumber('id');
    Route::post('/data/download', [DataC::class, 'downloadFile']);
    Route::get('/data/count', [DataC::class, 'count']);
+
+   Route::get('/comments/{data_id}', [CommentC::class, 'get'])->whereNumber('data_id');
+   Route::get('/comment', [CommentC::class, 'create']);
+   Route::put('/comment/{id}', [CommentC::class, 'update'])->whereNumber('id');
+   Route::delete('/comment/{id}', [CommentC::class, 'delete'])->whereNumber('id');
 
    Route::put('/user/{id}', [UserC::class, 'update'])->whereNumber('id');
 });
