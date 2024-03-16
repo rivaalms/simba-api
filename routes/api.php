@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
+use App\Http\Controllers\UserC;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,11 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::middleware('ability:admin')->group(function() {
       Route::delete('/data/{id}', [DataC::class, 'delete'])->whereNumber('id');
+
+      Route::get('/users', [UserC::class, 'get']);
+      Route::get('/users/count', [UserC::class, 'count']);
+      Route::post('/user/{id}/activate', [UserC::class, 'activate'])->whereNumber('id');
+      Route::post('/user/{id}/inactivate', [UserC::class, 'inactivate'])->whereNumber('id');
    });
 
    Route::middleware('ability:school')->group(function() {
@@ -39,4 +45,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data/{id}', [DataC::class, 'show'])->whereNumber('id');
    Route::post('/data/download', [DataC::class, 'downloadFile']);
    Route::get('/data/count', [DataC::class, 'count']);
+
+   Route::put('/user/{id}', [UserC::class, 'update'])->whereNumber('id');
 });
