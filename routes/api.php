@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthC::class, 'login']);
+Route::post('/forgot-password', [AuthC::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthC::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')->group(function() {
    Route::post('/logout', [AuthC::class, 'logout']);
