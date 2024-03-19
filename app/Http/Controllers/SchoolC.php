@@ -82,20 +82,20 @@ class SchoolC extends Controller
 
    public function count(Request $request) {
       $user = $request->user();
-      $query = School::selectRaw('count(id) as count, school_type_id')
-         ->when($this->isSupervisor($user), function($q) use ($user) {
-            return $q->where('supervisor_id', $user->userable_id);
-         });
+      $query = School::select('school_type_id');
+      $byTypeQuery = School::without(['user', 'type', 'supervisor'])->selectRaw('count(schools.id) as count, school_types.name as type')->join('school_types', 'schools.school_type_id', '=', 'school_types.id');
 
-      $countByType = SchoolType::selectRaw('name, count(schools.id) as count')
-         ->joinSub($query, 'schools', function($join) {
-            $join->on('schools.school_type_id', '=', 'school_types.id');
-         })
-         ->groupBy('school_types.name')
-         ->get();
+
+      if ($user->userable_type == 'supervisor') {
+         $query = $query->where('supervisor_id', $user->userable_id);
+         $byTypeQuery = $byTypeQuery->where('supervisor_id', $user->userable_id);
+      }
+
+      $count = $query->count();
+      $countByType = $byTypeQuery->groupBy('school_types.name')->get();
 
       $result = array(
-         'total' => $query->count(),
+         'total' => $count,
          'by_type' => $countByType
       );
 
