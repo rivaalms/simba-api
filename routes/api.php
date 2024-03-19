@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
 use App\Http\Controllers\UserC;
 use App\Http\Controllers\CommentC;
+use App\Http\Controllers\SchoolC;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthC::class, 'login']);
@@ -22,6 +23,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::get('/users/count', [UserC::class, 'count']);
       Route::post('/user/{id}/activate', [UserC::class, 'activate'])->whereNumber('id');
       Route::post('/user/{id}/inactivate', [UserC::class, 'inactivate'])->whereNumber('id');
+
+      Route::post('/school', [SchoolC::class, 'create']);
+      Route::put('/school/{id}', [SchoolC::class, 'update'])->whereNumber('id');
+      Route::delete('/school/{id}', [SchoolC::class, 'delete'])->whereNumber('id');
    });
 
    Route::middleware('ability:school')->group(function() {
@@ -35,7 +40,9 @@ Route::middleware('auth:sanctum')->group(function() {
    });
 
    Route::middleware('ability:supervisor,officer')->group(function() {
-
+      Route::get('/schools', [SchoolC::class, 'get']);
+      Route::get('/school/{id}', [SchoolC::class, 'show'])->whereNumber('id');
+      Route::get('/schools/count', [SchoolC::class, 'count']);
    });
 
    Route::middleware('ability:officer')->group(function() {
