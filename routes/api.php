@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
 use App\Http\Controllers\UserC;
 use App\Http\Controllers\CommentC;
+use App\Http\Controllers\DataCategoryC;
 use App\Http\Controllers\OfficerC;
 use App\Http\Controllers\SchoolC;
 use App\Http\Controllers\SupervisorC;
@@ -38,6 +39,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/officer', [OfficerC::class, 'create']);
       Route::put('/officer/{id}', [OfficerC::class, 'update'])->whereNumber('id');
       Route::delete('/officer/{id}', [OfficerC::class, 'delete'])->whereNumber('id');
+
+      Route::post('/data-category', [DataCategoryC::class, 'create']);
+      Route::put('/data-category/{id}', [DataCategoryC::class, 'update'])->whereNumber('id');
+      Route::delete('/data-category/{id}', [DataCategoryC::class, 'delete'])->whereNumber('id');
    });
 
    Route::middleware('ability:school')->group(function() {
@@ -74,4 +79,6 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::delete('/comment/{id}', [CommentC::class, 'delete'])->whereNumber('id');
 
    Route::put('/user/{id}', [UserC::class, 'update'])->whereNumber('id');
+
+   Route::get('/data-categories', [DataCategoryC::class, 'get']);
 });
