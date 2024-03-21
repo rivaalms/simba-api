@@ -19,7 +19,7 @@ class DataCategoryC extends Controller
    public function create(DataCategoryReq $request) {
       $_category = $request->validated();
       $category = DataCategory::create($_category);
-      return parent::apiResponse($category, 'Kategori data berhasil dibuat');
+      return parent::apiResponse($category, 'Kategori data berhasil ditambahkan');
    }
 
    public function update(DataCategoryReq $request, int $id) {
