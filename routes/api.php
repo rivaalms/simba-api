@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCategoryC;
 use App\Http\Controllers\SchoolStudentC;
 use App\Http\Controllers\SchoolTeacherC;
+use App\Http\Controllers\SchoolTypeC;
 
 Route::post('/login', [AuthC::class, 'login']);
 Route::post('/forgot-password', [AuthC::class, 'forgotPassword']);
@@ -56,6 +57,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/data-type', [DataTypeC::class, 'create']);
       Route::put('/data-type/{id}', [DataTypeC::class, 'update'])->whereNumber('id');
       Route::delete('/data-type/{id}', [DataTypeC::class, 'delete'])->whereNumber('id');
+
+      Route::post('/school-type', [SchoolTypeC::class, 'create']);
+      Route::put('/school-type/{id}', [SchoolTypeC::class, 'update'])->whereNumber('id');
+      Route::delete('/school-type/{id}', [SchoolTypeC::class, 'delete'])->whereNumber('id');
 
       Route::post('/religion', [ReligionC::class, 'create']);
       Route::put('/religion/{id}', [ReligionC::class, 'update'])->whereNumber('id');
@@ -106,6 +111,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data-categories', [DataCategoryC::class, 'get']);
    Route::get('/data-statuses', [DataStatusC::class, 'get']);
    Route::get('/data-types', [DataTypeC::class, 'get']);
+   Route::get('/school-types', [SchoolTypeC::class, 'get']);
    Route::get('/religions', [ReligionC::class, 'get']);
 
    Route::get('/school-students', [SchoolStudentC::class, 'get']);
