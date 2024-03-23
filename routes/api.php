@@ -14,6 +14,7 @@ use App\Http\Controllers\SupervisorC;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCategoryC;
 use App\Http\Controllers\SchoolStudentC;
+use App\Http\Controllers\SchoolTeacherC;
 
 Route::post('/login', [AuthC::class, 'login']);
 Route::post('/forgot-password', [AuthC::class, 'forgotPassword']);
@@ -68,6 +69,9 @@ Route::middleware('auth:sanctum')->group(function() {
 
       Route::post('/school-students', [SchoolStudentC::class, 'create']);
       Route::get('/school-students/count', [SchoolStudentC::class, 'count']);
+
+      Route::post('/school-teachers', [SchoolTeacherC::class, 'create']);
+      Route::get('/school-teachers/count', [SchoolTeacherC::class, 'count']);
    });
 
    Route::middleware('ability:supervisor')->group(function() {
@@ -106,4 +110,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::get('/school-students', [SchoolStudentC::class, 'get']);
    Route::get('/school-students/{id}/growth', [SchoolStudentC::class, 'growth'])->whereNumber('id');
+
+   Route::get('/school-teachers', [SchoolTeacherC::class, 'get']);
+   Route::get('/school-teachers/{id}/growth', [SchoolTeacherC::class, 'growth'])->whereNumber('id');
 });
