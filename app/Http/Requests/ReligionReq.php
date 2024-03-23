@@ -14,7 +14,7 @@ class ReligionReq extends FormRequest
     */
    public function authorize(): bool
    {
-      if ($this->isNotAdmin($this->user)) return false;
+      if ($this->isNotAdmin($this->user())) return false;
       return true;
    }
 

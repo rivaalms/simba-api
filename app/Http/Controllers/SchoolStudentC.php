@@ -57,7 +57,7 @@ class SchoolStudentC extends Controller
       sort($years);
 
       $students = SchoolStudent::where('school_id', $id)
-         ->whereBetween('year', $years[0], last($years))
+         ->whereBetween('year', [$years[0], last($years)])
          ->orderBy('updated_at', 'desc')
          ->get();
 
