@@ -20,6 +20,12 @@ class SchoolReq extends FormRequest
       return true;
    }
 
+   public function prepareForValidation() {
+      $this->merge([
+         'status' => 'ACTIVE'
+      ]);
+   }
+
    /**
     * Get the validation rules that apply to the request.
     *
@@ -31,7 +37,8 @@ class SchoolReq extends FormRequest
          $rules = [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|string',
+            'password_confirmation' => 'required',
+            'password' => 'required|min:8|string|confirmed',
             'school_type_id' => 'required|numeric',
             'supervisor_id' => 'required|numeric',
             'principal' => 'nullable|string',

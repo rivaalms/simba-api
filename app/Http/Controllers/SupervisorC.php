@@ -38,10 +38,6 @@ class SupervisorC extends Controller
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_supervisor = $request->safe()->except(array_keys($_user));
 
-      if ($_user['password'] != $request->confirm_password) {
-         return parent::apiResponse(null, 'Konfirmasi kata sandi tidak cocok', 422);
-      }
-
       $supervisor = Supervisor::create($_supervisor);
       $_user['userable_type'] = Supervisor::MORPH_ALIAS;
       $_user['userable_id'] = $supervisor->id;

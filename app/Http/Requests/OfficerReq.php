@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Supervisor;
+use App\Models\Officer;
 use App\Traits\CheckUserable;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SupervisorReq extends FormRequest
+class OfficerReq extends FormRequest
 {
    use CheckUserable;
 
@@ -37,16 +37,16 @@ class SupervisorReq extends FormRequest
          $rules = [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'employee_number' => 'required|string|unique:supervisors,employee_number',
+            'employee_number' => 'required|string|unique:officers,employee_number',
             'password' => 'required|min:8|string|confirmed',
             'password_confirmation' => 'required'
          ];
       } else {
-         $supervisor = Supervisor::find($this->route('id'));
+         $officer = Officer::find($this->route('id'));
          $rules = [
             'name' => 'required|string',
-            'email' => "required|email|unique:users,email,{$supervisor->user->id}",
-            'employee_number' => "required|string|unique:supervisors,employee_number,{$supervisor->id}",
+            'email' => "required|email|unique:users,email,{$officer->user->id}",
+            'employee_number' => "required|string|unique:officers,employee_number,{$officer->id}",
          ];
       }
 

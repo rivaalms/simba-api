@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Officer;
 use Illuminate\Http\Request;
 use App\Traits\CheckUserable;
-use App\Http\Requests\SupervisorReq as OfficerReq;
+use App\Http\Requests\OfficerReq;
 use App\Models\User;
 
 class OfficerC extends Controller
@@ -33,10 +33,6 @@ class OfficerC extends Controller
    public function create(OfficerReq $request) {
       $_user = $request->safe()->only(User::USER_FIELDS);
       $_officer = $request->safe()->except(array_keys($_user));
-
-      if ($_user['password'] != $request->confirm_password) {
-         return parent::apiResponse(null, 'Konfirmasi kata sandi tidak sesuai', 422);
-      }
 
       $officer = Officer::create($_officer);
       $_user['userable_type'] = Officer::MORPH_ALIAS;

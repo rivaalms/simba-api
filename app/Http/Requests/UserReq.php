@@ -18,7 +18,7 @@ class UserReq extends FormRequest
     */
    public function authorize(): bool
    {
-      return true;
+      return $this->user()->id == $this->route('id');
    }
 
    protected function prepareForValidation() {
