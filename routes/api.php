@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
 use App\Http\Controllers\UserC;
@@ -13,8 +13,8 @@ use App\Http\Controllers\ReligionC;
 use App\Http\Controllers\DataStatusC;
 use App\Http\Controllers\SchoolTypeC;
 use App\Http\Controllers\SupervisorC;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCategoryC;
+use App\Http\Controllers\SelectOptionC;
 use App\Http\Controllers\SchoolStudentC;
 use App\Http\Controllers\SchoolTeacherC;
 
@@ -125,4 +125,15 @@ Route::middleware('auth:sanctum')->group(function() {
 
    Route::get('/school-teachers', [SchoolTeacherC::class, 'get']);
    Route::get('/school-teachers/{id}/growth', [SchoolTeacherC::class, 'growth'])->whereNumber('id');
+
+   Route::prefix('options')->group(function () {
+      Route::get('/data-categories', [SelectOptionC::class, 'getDataCategories']);
+      Route::get('/data-status', [SelectOptionC::class, 'getDataStatuses']);
+      Route::get('/data-types', [SelectOptionC::class, 'getDataTypes']);
+      Route::get('/school-types', [SelectOptionC::class, 'getSchoolTypes']);
+      Route::get('/religions', [SelectOptionC::class, 'getReligions']);
+      Route::get('/subjects', [SelectOptionC::class, 'getSubjects']);
+      Route::get('/schools', [SelectOptionC::class, 'getSchools']);
+      Route::get('/supervisors', [SelectOptionC::class, 'getSupervisors']);
+   });
 });
