@@ -7,15 +7,16 @@ use App\Http\Controllers\UserC;
 use App\Http\Controllers\SchoolC;
 use App\Http\Controllers\CommentC;
 use App\Http\Controllers\OfficerC;
+use App\Http\Controllers\SubjectC;
 use App\Http\Controllers\DataTypeC;
 use App\Http\Controllers\ReligionC;
 use App\Http\Controllers\DataStatusC;
+use App\Http\Controllers\SchoolTypeC;
 use App\Http\Controllers\SupervisorC;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataCategoryC;
 use App\Http\Controllers\SchoolStudentC;
 use App\Http\Controllers\SchoolTeacherC;
-use App\Http\Controllers\SchoolTypeC;
 
 Route::post('/login', [AuthC::class, 'login']);
 Route::post('/forgot-password', [AuthC::class, 'forgotPassword']);
@@ -65,6 +66,10 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/religion', [ReligionC::class, 'create']);
       Route::put('/religion/{id}', [ReligionC::class, 'update'])->whereNumber('id');
       Route::delete('/religion/{id}', [ReligionC::class, 'delete'])->whereNumber('id');
+
+      Route::post('/subject', [SubjectC::class, 'create']);
+      Route::put('/subject/{id}', [SubjectC::class, 'update'])->whereNumber('id');
+      Route::delete('/subject/{id}', [SubjectC::class, 'delete'])->whereNumber('id');
    });
 
    Route::middleware('ability:school')->group(function() {
@@ -113,6 +118,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data-types', [DataTypeC::class, 'get']);
    Route::get('/school-types', [SchoolTypeC::class, 'get']);
    Route::get('/religions', [ReligionC::class, 'get']);
+   Route::get('/subjects', [SubjectC::class, 'get']);
 
    Route::get('/school-students', [SchoolStudentC::class, 'get']);
    Route::get('/school-students/{id}/growth', [SchoolStudentC::class, 'growth'])->whereNumber('id');
