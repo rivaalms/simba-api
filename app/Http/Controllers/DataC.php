@@ -107,6 +107,15 @@ class DataC extends Controller
       return parent::apiResponse(true, 'File pada data berhasil diperbarui');
    }
 
+   public function updateStatus(Request $request, int $id) {
+      $data = $request->validate([
+         'data_status_id' => 'required|exists:data_statuses,id'
+      ]);
+
+      Data::find($id)->update($data);
+      return parent::apiResponse(true, 'Status data berhasil diperbarui');
+   }
+
    public function downloadFile(Request $request) {
       $data = Data::find($request->id);
       if (!$data) return parent::apiResponse(null, 'Data tidak ditemukan', 422);

@@ -35,6 +35,10 @@ class CommentC extends Controller
       $user = $request->user();
       $comment = Comment::find($id);
 
+      if (!$comment) {
+         return parent::apiResponse(null, 'Komentar tidak ditemukan', 404);
+      }
+
       if ($this->isNotAdmin($user) && $comment->user_id != $user->id) {
          return parent::apiResponse(null, 'Aksi tidak diizinkan', 403);
       }

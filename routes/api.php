@@ -85,7 +85,7 @@ Route::middleware('auth:sanctum')->group(function() {
    });
 
    Route::middleware('ability:supervisor')->group(function() {
-
+      Route::put('/data/{id}/update-status', [DataC::class, 'updateStatus'])->whereNumber('id');
    });
 
    Route::middleware('ability:supervisor,officer')->group(function() {
@@ -107,7 +107,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data/count', [DataC::class, 'count']);
 
    Route::get('/comments/{data_id}', [CommentC::class, 'get'])->whereNumber('data_id');
-   Route::get('/comment', [CommentC::class, 'create']);
+   Route::post('/comment', [CommentC::class, 'create']);
    Route::put('/comment/{id}', [CommentC::class, 'update'])->whereNumber('id');
    Route::delete('/comment/{id}', [CommentC::class, 'delete'])->whereNumber('id');
 
