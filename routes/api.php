@@ -4,14 +4,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthC;
 use App\Http\Controllers\DataC;
 use App\Http\Controllers\UserC;
-use App\Http\Controllers\CommentC;
-use App\Http\Controllers\DataCategoryC;
-use App\Http\Controllers\DataStatusC;
-use App\Http\Controllers\DataTypeC;
-use App\Http\Controllers\OfficerC;
 use App\Http\Controllers\SchoolC;
+use App\Http\Controllers\CommentC;
+use App\Http\Controllers\OfficerC;
+use App\Http\Controllers\DataTypeC;
+use App\Http\Controllers\ReligionC;
+use App\Http\Controllers\DataStatusC;
 use App\Http\Controllers\SupervisorC;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DataCategoryC;
+use App\Http\Controllers\SchoolStudentC;
 
 Route::post('/login', [AuthC::class, 'login']);
 Route::post('/forgot-password', [AuthC::class, 'forgotPassword']);
@@ -53,12 +55,19 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::post('/data-type', [DataTypeC::class, 'create']);
       Route::put('/data-type/{id}', [DataTypeC::class, 'update'])->whereNumber('id');
       Route::delete('/data-type/{id}', [DataTypeC::class, 'delete'])->whereNumber('id');
+
+      Route::post('/religion', [ReligionC::class, 'create']);
+      Route::put('/religion/{id}', [ReligionC::class, 'update'])->whereNumber('id');
+      Route::delete('/religion/{id}', [ReligionC::class, 'delete'])->whereNumber('id');
    });
 
    Route::middleware('ability:school')->group(function() {
       Route::post('/data', [DataC::class, 'create'])->name('data:create');
       Route::put('/data/{id}', [DataC::class, 'update'])->name('data:update');
       Route::post('/data/file/{id}', [DataC::class, 'updateFile'])->name('data:file_update');
+
+      Route::post('/school-students', [SchoolStudentC::class, 'create']);
+      Route::get('/school-students/count', [SchoolStudentC::class, 'count']);
    });
 
    Route::middleware('ability:supervisor')->group(function() {
@@ -93,4 +102,8 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::get('/data-categories', [DataCategoryC::class, 'get']);
    Route::get('/data-statuses', [DataStatusC::class, 'get']);
    Route::get('/data-types', [DataTypeC::class, 'get']);
+   Route::get('/religions', [ReligionC::class, 'get']);
+
+   Route::get('/school-students', [SchoolStudentC::class, 'get']);
+   Route::get('/school-students/{id}/growth', [SchoolStudentC::class, 'growth'])->whereNumber('id');
 });
