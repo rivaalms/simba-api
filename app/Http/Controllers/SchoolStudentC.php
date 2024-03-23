@@ -88,11 +88,8 @@ class SchoolStudentC extends Controller
          ->where('year', $year)
          ->get();
 
-      $count = $data->map(fn ($item) =>
-         $item['count']->reduce(fn ($sum, $current) =>
-            $sum + $current
-         )
-      );
+      $count = $data->map(fn ($item) => $item['count'])
+         ->reduce(fn ($sum, $current) => $sum + $current);
 
       return parent::apiResponse($count);
    }
