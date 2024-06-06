@@ -222,9 +222,14 @@ class UserController extends Controller
       return $this->apiResponse(true, 'Pengguna berhasil dinonaktifkan');
    }
 
-   public function count()
+   public function count(Request $request)
    {
-      $query = User::all();
+      if ($request->user()->userable_type == 'officer') {
+         $query = User::select('id', 'userable_type')->whereNotNull('userable_type')->get();
+      } else {
+         $query = User::select('id', 'userable_type')->get();
+      }
+
       $total = $query->count();
       $user_by_type = [
          School::MORPH_ALIAS => 0,

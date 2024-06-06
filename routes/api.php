@@ -39,7 +39,6 @@ Route::middleware('auth:sanctum')->group(function() {
       Route::delete('/data/{id}', [DataController::class, 'delete']);
 
       Route::get('/users', [UserController::class, 'get']);
-      Route::get('/users/count', [UserController::class, 'count']);
       Route::post('/user/{id}/activate', [UserController::class, 'activate']);
       Route::post('/user/{id}/inactivate', [UserController::class, 'inactivate']);
 
@@ -106,6 +105,7 @@ Route::middleware('auth:sanctum')->group(function() {
    Route::middleware('ability:officer')->group(function() {
       Route::get('/supervisors', [SupervisorController::class, 'get']);
       Route::get('/officer/{id}', [OfficerController::class, 'getDetails']);
+      Route::get('/users/count', [UserController::class, 'count']);
    });
 
    Route::get('/data', [DataController::class, 'get']);
